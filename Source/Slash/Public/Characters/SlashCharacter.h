@@ -6,6 +6,11 @@
 #include "GameFramework/Character.h"
 #include "SlashCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+class UGroomComponent;
+
+
 UCLASS()
 class SLASH_API ASlashCharacter : public ACharacter
 {
@@ -17,12 +22,23 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
-	void MoveForward(float Value);
-
-protected:
-	
 	virtual void BeginPlay() override;
+	void MoveForward(float Value);
+	void MoveRight(float Value);
+	void Turn(float Value);
+	void LookUp(float Value);
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* ViewCamera;
 	
-	
+	UPROPERTY(VisibleAnywhere, Category = Hair)
+	UGroomComponent* Hair;//添加毛发组件（头发）
+
+	UPROPERTY(VisibleAnywhere, Category = Hair)
+	UGroomComponent* Eyebrows;////添加毛发组件（眉毛）
 
 };
