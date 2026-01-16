@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#pragma once
+#pragma once//避免重复包含头文件
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Actor.h"//因为AActor继承与Actor，要使用Actor内容要记得包含它的头文件。
 #include "Item.generated.h"
 
 UCLASS()
 class SLASH_API AItem : public AActor
 {
-	GENERATED_BODY()
+	GENERATED_BODY()//理解为一个功能增强的普通C++类，它能参与虚幻引擎的幕后工作，从而与ue的反射系统连接。作用：可以基于这个类创建蓝图，把属性暴露给蓝图等等。
 	
 public:	
 	
@@ -25,9 +25,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
 	float TimeConstant = 5.f;
 
+	//蓝图里添加正弦函数组件
 	UFUNCTION(BlueprintPure)
 	float TransformedSin();
 
+	//蓝图里添加余弦函数组件
 	UFUNCTION(BlueprintPure)
 	float TransformedCos();
 
@@ -36,7 +38,7 @@ protected:
 
 private:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
-	float RunningTime;
+	float RunningTime; 
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ItemMesh;
@@ -44,8 +46,12 @@ private:
 	
 };
 
+//内联函数：通过在调用处直接嵌入函数体代码来替代函数调用，以牺牲少量代码体积为代价，消除函数调用的开销从而提升程序执行效率。
+//可以消除函数调用开销，提升执行效率。
+
+//模板函数
 template<typename T>
-inline T AItem::Avg(T First, T Second)
+inline T AItem::Avg(T First, T Second)  
 {
 	return (First + Second) / 2;
 }
