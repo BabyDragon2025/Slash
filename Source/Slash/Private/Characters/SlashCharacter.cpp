@@ -59,6 +59,9 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis(FName("MoveRight"), this, &ASlashCharacter::MoveRight);
 	PlayerInputComponent->BindAxis(FName("Turn"), this, &ASlashCharacter::Turn);
 	PlayerInputComponent->BindAxis(FName("LookUp"), this, &ASlashCharacter::LookUp);
+
+	//绑定跳跃//Jump本身在角色类就存在，在编辑器里设置了。而且我们没有改写它，它不用在SlashCharacter里设置。IE_Pressed包含枚举常量，比如：按下。
+	PlayerInputComponent->BindAction(FName("Jump"), IE_Pressed, this, &ACharacter::Jump);
 }
 
 void ASlashCharacter::MoveForward(float Value)
