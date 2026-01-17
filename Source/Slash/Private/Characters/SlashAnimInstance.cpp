@@ -30,5 +30,8 @@ void USlashAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	{
 		//获取SlashCharacterMovement在xy方向上的速度
 		GroundSpeed = UKismetMathLibrary::VSizeXY(SlashCharacterMovement->Velocity);
+
+		//调用IsFalling()来设置跳跃变量。
+		IsFalling = SlashCharacterMovement->IsFalling();
 	}
 }

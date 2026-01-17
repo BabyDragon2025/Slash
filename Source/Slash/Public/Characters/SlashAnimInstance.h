@@ -26,4 +26,7 @@ public:
 	//创建地面速度，归类到移动
 	UPROPERTY(BlueprintReadOnly,Category=Movement)
 	float GroundSpeed;
+
+	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	bool IsFalling;//判断是否跳跃。每帧都要判断，所以放到NativeUpdateAnimation
 };
