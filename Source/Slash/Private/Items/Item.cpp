@@ -15,20 +15,17 @@ AItem::AItem()
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
 	RootComponent = ItemMesh;
 
-	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
-	Sphere->SetupAttachment(GetRootComponent());
+	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere")); //创建球形组件
+	Sphere->SetupAttachment(GetRootComponent()); 
 }
 
 // Called when the game starts or when spawned
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
-
-	int32 AvgInt = Avg<int32>(1, 3);
-	UE_LOG(LogTemp, Warning, TEXT("Avg of 1 and 3: %d"), AvgInt);
-
-	float AvgFloat = Avg<float>(3.45f, 7.86f);
-	UE_LOG(LogTemp, Warning, TEXT("Avg of 3.45 and  7.86: %f"), AvgFloat);
+	
+	//找到我们的物体，绑定回调到委托
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnSphereOverlap); 
 }
 
 float AItem::TransformedSin( )
@@ -39,6 +36,16 @@ float AItem::TransformedSin( )
 float AItem::TransformedCos()
 {
 	return Amplitude * FMath::Cos(RunningTime * TimeConstant);
+}
+
+void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	const FString OtherActorName = OtherActor->GetName();//获取角色名称
+	//把它打印到屏幕上
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+	}
 }
 
 // Called every frame
