@@ -26,6 +26,9 @@ void AItem::BeginPlay()
 	
 	//找到我们的物体，绑定回调到委托
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnSphereOverlap); 
+
+	//获取我们的球体，访问它的组件结束重叠事件
+	Sphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereEndOverlap);
 }
 
 float AItem::TransformedSin( )
@@ -45,6 +48,16 @@ void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+	}
+}
+
+void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	const FString OtherActorName = FString("Ending Overlap with: ") + OtherActor->GetName();//展示一下，FString可以叠加的。
+	//把它打印到屏幕上
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Blue, OtherActorName);
 	}
 }
 
