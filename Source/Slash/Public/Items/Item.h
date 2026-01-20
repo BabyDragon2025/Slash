@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"//因为AActor继承与Actor，要使用Actor内容要记得包含它的头文件。
 #include "Item.generated.h"
 
+class USphereComponent; //声明一个球形组件
+
 UCLASS()
 class SLASH_API AItem : public AActor
 {
@@ -43,7 +45,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ItemMesh;
 
-	
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* Sphere; //声明一个USphereComponent类的指针
 };
 
 //内联函数：通过在调用处直接嵌入函数体代码来替代函数调用，以牺牲少量代码体积为代价，消除函数调用的开销从而提升程序执行效率。

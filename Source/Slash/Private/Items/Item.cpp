@@ -3,7 +3,7 @@
 
 #include "Items/Item.h"
 #include"Slash/DebugMacros.h"
-
+#include"Components/SphereComponent.h" //球形组件的头文件
 
 
 
@@ -14,6 +14,9 @@ AItem::AItem()
 
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
 	RootComponent = ItemMesh;
+
+	Sphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
+	Sphere->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
