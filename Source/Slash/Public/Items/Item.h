@@ -46,12 +46,14 @@ protected:
 	//创建OnSphereEndOverlap回调函数
 	UFUNCTION()//需要U函数宏才可以绑定 //准备在Weapon里面重写函数，加上virtual
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* ItemMesh;
 private:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 	float RunningTime; 
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* ItemMesh;
+	
 
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere; //声明一个USphereComponent类的指针
