@@ -109,6 +109,7 @@ void ASlashCharacter::EKeyPressed()
 	if (OverlappingWeapon)
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon; //角色状态，放映我们是否装备了武器
 	}
 }
 

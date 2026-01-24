@@ -33,5 +33,7 @@ void USlashAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 		//调用IsFalling()来设置跳跃变量。
 		IsFalling = SlashCharacterMovement->IsFalling();
+
+		CharacterState = SlashCharacter->GetCharacterState(); //时刻更新角色状态
 	}
 }

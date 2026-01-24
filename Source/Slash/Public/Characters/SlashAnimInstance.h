@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include"CharacterType.h"
 #include "SlashAnimInstance.generated.h"
 
 /**
@@ -29,4 +30,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = Movement)
 	bool IsFalling;//判断是否跳跃。每帧都要判断，所以放到NativeUpdateAnimation
+
+	UPROPERTY(BlueprintReadOnly,Category="Movement|Character State")
+	ECharacterState CharacterState;//在动画里加入状态
 };
