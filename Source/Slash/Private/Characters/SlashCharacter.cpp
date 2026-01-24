@@ -6,6 +6,8 @@
 #include "Camera/CameraComponent.h"//摄像机头文件
 #include "GameFramework/CharacterMovementComponent.h"//人物移动头文件
 #include "GroomComponent.h"//毛发头文件
+#include"Items/Item.h"
+#include"Items/Weapons/Weapon.h"
 
 ASlashCharacter::ASlashCharacter()
 {
@@ -62,6 +64,8 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	//绑定跳跃//Jump本身在角色类就存在，在编辑器里设置了。而且我们没有改写它，它不用在SlashCharacter里设置。IE_Pressed包含枚举常量，比如：按下。
 	PlayerInputComponent->BindAction(FName("Jump"), IE_Pressed, this, &ACharacter::Jump);
+	//绑定装备
+	PlayerInputComponent->BindAction(FName("Equip"), IE_Pressed, this, &ASlashCharacter::EKeyPressed);
 }
 
 void ASlashCharacter::MoveForward(float Value)
@@ -96,5 +100,15 @@ void ASlashCharacter::Turn(float Value)
 void ASlashCharacter::LookUp(float Value)
 {
 	AddControllerPitchInput(Value);
+}
+
+void ASlashCharacter::EKeyPressed()
+{
+	//识别武器
+	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
+	if (OverlappingWeapon)
+	{
+		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+	}
 }
 

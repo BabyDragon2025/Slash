@@ -13,6 +13,8 @@ UCLASS()
 class SLASH_API AWeapon : public AItem
 {
 	GENERATED_BODY()
+public:
+	void Equip(USceneComponent* InParent,FName InSocketName);//自定义一个函数来处理装备的武器//传入角色和插槽名字
 protected:
 	
 	//由于是重写函数，所以不需要UFuntion来暴露给蓝图，因为原本的函数就有了，可以继承过来。多写了会报错。记得加上override标记为重写函数

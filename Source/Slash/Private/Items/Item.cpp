@@ -4,7 +4,7 @@
 #include "Items/Item.h"
 #include"Slash/DebugMacros.h"
 #include"Components/SphereComponent.h" //球形组件的头文件
-
+#include"Characters/SlashCharacter.h" // 有了它，可以在OnSphereOverlap中将其转换为SlashCharacter
 
 
 // Sets default values
@@ -43,21 +43,21 @@ float AItem::TransformedCos()
 
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();//获取角色名称
-	//把它打印到屏幕上
-	if (GEngine)
+	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	//角色重叠时设置角色上的重叠物品
+	if (SlashCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+		SlashCharacter->SetOverlappingItem(this);
 	}
 }
 
 void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	const FString OtherActorName = FString("Ending Overlap with: ") + OtherActor->GetName();//展示一下，FString可以叠加的。
-	//把它打印到屏幕上
-	if (GEngine)
+	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	//角色离开时设置角色上的重叠物品
+	if (SlashCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Blue, OtherActorName);
+		SlashCharacter->SetOverlappingItem(nullptr);
 	}
 }
 
