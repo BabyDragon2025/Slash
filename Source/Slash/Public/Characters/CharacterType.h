@@ -9,3 +9,9 @@ enum class ECharacterState :uint8 //uint8可以优化一下枚举，使其每个常量都是8位无
 	ECS_EquippedOneHandedWeapon  UMETA(DisplayName = "Equipped One-Handed Weapon"),
 	ECS_EquippedTwoHandedWeapon  UMETA(DisplayName = "Equipped Two-Handed Weapon")
 };
+
+enum class EActionState : uint8
+{
+	EAS_Unoccupied UMETA(DisplayName = "Unoccupied"), //此状态：阻止角色做当前活动以外的其它动作
+	EAS_Attacking UMETA(DisplayName="Attacking")//此状态：攻击时的姿态
+};

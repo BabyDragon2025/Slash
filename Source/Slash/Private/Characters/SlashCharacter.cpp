@@ -119,13 +119,24 @@ void ASlashCharacter::EKeyPressed()
 //攻击函数
 void ASlashCharacter::Attack()
 {
+	if (ActionState == EActionState::EAS_Unoccupied) //攻击状态判断
+	{
+		PlayAttackMontage();
+		ActionState = EActionState::EAS_Attacking;
+	}
+	
+}
+
+//自定义重构函数，转移了用来的攻击内容用于统一管理
+void ASlashCharacter::PlayAttackMontage()
+{
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();//获取动画实例
 	if (AnimInstance && AttackMontage) //播放蒙太奇动画
 	{
-		AnimInstance->Montage_Play(AttackMontage); 
-		int32 Selection = FMath::RandRange(0, 1); //动画随机播放这两种
+		AnimInstance->Montage_Play(AttackMontage);
+		const int32 Selection = FMath::RandRange(0, 1); //动画随机播放这两种
 		FName SectionName = FName(); //初始化一下名字变量
-		switch (Selection) 
+		switch (Selection)
 		{
 		case 0:
 			SectionName = FName("Attack1");

@@ -26,15 +26,21 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
 	virtual void BeginPlay() override;
+
+	//输入的回调函数
 	void MoveForward(float Value); //前进函数。
 	void MoveRight(float Value);
 	void Turn(float Value);
 	void LookUp(float Value);
 	void EKeyPressed(); //这是一个动作映射（装备武器），因为是一次性，所以没有参数。
 	void Attack(); //攻击的回调函数，用来绑定攻击键。
+
+	//播放蒙太奇动画的函数//重构函数
+	void PlayAttackMontage();
 private:
 
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped; //使用枚举常量来控制游戏逻辑
+	EActionState ActionState = EActionState::EAS_Unoccupied; //在攻击过程中阻止继续攻击
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;//添加弹簧臂组件
