@@ -8,6 +8,7 @@
 #include "GroomComponent.h"//毛发头文件
 #include"Items/Item.h"
 #include"Items/Weapons/Weapon.h"
+#include"Animation/AnimMontage.h"
 
 ASlashCharacter::ASlashCharacter()
 {
@@ -66,6 +67,8 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction(FName("Jump"), IE_Pressed, this, &ACharacter::Jump);
 	//绑定装备
 	PlayerInputComponent->BindAction(FName("Equip"), IE_Pressed, this, &ASlashCharacter::EKeyPressed);
+	//绑定攻击
+	PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ASlashCharacter::Attack);
 }
 
 void ASlashCharacter::MoveForward(float Value)
@@ -110,6 +113,29 @@ void ASlashCharacter::EKeyPressed()
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon; //角色状态，放映我们是否装备了武器
+	}
+}
+
+//攻击函数
+void ASlashCharacter::Attack()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();//获取动画实例
+	if (AnimInstance && AttackMontage) //播放蒙太奇动画
+	{
+		AnimInstance->Montage_Play(AttackMontage); 
+		int32 Selection = FMath::RandRange(0, 1); //动画随机播放这两种
+		FName SectionName = FName(); //初始化一下名字变量
+		switch (Selection) 
+		{
+		case 0:
+			SectionName = FName("Attack1");
+			break;
+		case 1:
+			SectionName = FName("Attack2");
+		default:
+			break;
+		}
+		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 	}
 }
 
