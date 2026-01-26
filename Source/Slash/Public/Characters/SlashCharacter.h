@@ -40,6 +40,8 @@ protected:
 private:
 
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped; //使用枚举常量来控制游戏逻辑
+
+	UPROPERTY(BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied; //在攻击过程中阻止继续攻击
 
 	UPROPERTY(VisibleAnywhere)
