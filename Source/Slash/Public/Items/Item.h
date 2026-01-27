@@ -9,6 +9,12 @@
 
 class USphereComponent; //声明一个球形组件
 
+enum class EItemState :uint8 //物品状态枚举变量
+{
+	EIS_Hovering,
+	EIS_Equipped
+};
+
 UCLASS()
 class SLASH_API AItem : public AActor
 {
@@ -49,6 +55,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* ItemMesh; 
+
+	EItemState ItemState = EItemState::EIS_Hovering; //物品状态。因为不打算把它暴露给蓝图，所以不设置成U变量。
 private:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 	float RunningTime; 

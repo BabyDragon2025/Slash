@@ -9,6 +9,7 @@ void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 {
 	FAttachmentTransformRules TransformRules(EAttachmentRule::SnapToTarget, true);
 	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);  //场景组件作为父级，TransformRules作为规则，附加对象InSocketName
+	ItemState = EItemState::EIS_Equipped;//物品状态设置为：已装备
 }
 
 //重写了重叠信息
