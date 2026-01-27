@@ -119,12 +119,18 @@ void ASlashCharacter::EKeyPressed()
 //攻击函数
 void ASlashCharacter::Attack()
 {
-	if (ActionState == EActionState::EAS_Unoccupied) //攻击状态判断
+	
+	if (CanAttack()) //攻击状态判断
 	{
 		PlayAttackMontage();
 		ActionState = EActionState::EAS_Attacking;
 	}
 	
+}
+
+bool ASlashCharacter::CanAttack()
+{
+	return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
 }
 
 //自定义重构函数，转移了用来的攻击内容用于统一管理
@@ -149,4 +155,11 @@ void ASlashCharacter::PlayAttackMontage()
 		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 	}
 }
+
+void ASlashCharacter::AttackEnd()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+
 

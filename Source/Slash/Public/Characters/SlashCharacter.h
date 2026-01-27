@@ -63,6 +63,10 @@ private:
 	UPROPERTY(EditDefaultsOnly,Category=Montages)
 	UAnimMontage* AttackMontage;
 
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd(); //攻击结束通知
+	bool CanAttack();// 是否可以攻击
+
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; } //有了OverlappingItem的公开设置器。小型的的函数设置成内联更高效
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; } //角色状态的公开访问器
