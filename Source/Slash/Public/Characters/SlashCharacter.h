@@ -12,7 +12,7 @@ class UCameraComponent;//提前声明摄像机组件
 class UGroomComponent;//提前声明毛发组件
 class AItem; 
 class UAnimMontage;
-
+class AWeapon;
 
 UCLASS()
 class SLASH_API ASlashCharacter : public ACharacter
@@ -37,6 +37,14 @@ protected:
 
 	//播放蒙太奇动画的函数//重构函数
 	void PlayAttackMontage();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd(); //攻击结束通知
+	bool CanAttack();// 是否可以攻击
+
+	void PlayEquipMontage(FName SectionName);//装备动画的函数
+	bool CanDisarm();//检查卸下播放装备武器的蒙太奇动画的条件
+	bool CanArm();//检查装备武器的蒙太奇动画的条件
 private:
 
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped; //使用枚举常量来控制游戏逻辑
@@ -59,13 +67,17 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;  //创建一个重叠的游戏物品，需要在物品重叠时，才能从物品类里设置这个属性
 
+	UPROPERTY(VisibleAnywhere,Category=Weapon)
+	AWeapon* EquippedWeapon;//表示当前持有的武器
+
 	//动画蒙太奇，这里保留蒙太奇变量，未来可能添加更多
 	UPROPERTY(EditDefaultsOnly,Category=Montages)
 	UAnimMontage* AttackMontage;
+	//装备武器的蒙太奇动画
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* EquipMontage;
 
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd(); //攻击结束通知
-	bool CanAttack();// 是否可以攻击
+	
 
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; } //有了OverlappingItem的公开设置器。小型的的函数设置成内联更高效
