@@ -45,6 +45,15 @@ protected:
 	void PlayEquipMontage(FName SectionName);//装备动画的函数
 	bool CanDisarm();//检查卸下播放装备武器的蒙太奇动画的条件
 	bool CanArm();//检查装备武器的蒙太奇动画的条件
+
+	UFUNCTION(BlueprintCallable)
+	void Disarm();//武器附着到脊椎上
+
+	UFUNCTION(BlueprintCallable)
+	void Arm();//武器从背上拿出的动画，也就是这次的附着点在右手
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();//装备动画结束时
 private:
 
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped; //使用枚举常量来控制游戏逻辑
