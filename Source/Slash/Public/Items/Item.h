@@ -57,14 +57,16 @@ protected:
 	UStaticMeshComponent* ItemMesh; 
 
 	EItemState ItemState = EItemState::EIS_Hovering; //物品状态。因为不打算把它暴露给蓝图，所以不设置成U变量。
+
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* Sphere;//声明一个USphereComponent类的指针
 private:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 	float RunningTime; 
 
 	
 
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* Sphere; //声明一个USphereComponent类的指针
+
 };
 
 //内联函数：通过在调用处直接嵌入函数体代码来替代函数调用，以牺牲少量代码体积为代价，消除函数调用的开销从而提升程序执行效率。
