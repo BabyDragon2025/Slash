@@ -24,6 +24,12 @@ public:
 	ASlashCharacter();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	//ÉèÖÃÅö×²¿ª¹Ø¡£
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled); 
+
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -12,7 +12,7 @@ AWeapon::AWeapon()
 {
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box"));
 	WeaponBox->SetupAttachment(GetRootComponent());
-	WeaponBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);//碰撞启用类形，对应蓝图。
+	WeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);//碰撞启用类型，对应蓝图。
 	WeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	WeaponBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);//设置单个通道。
 
