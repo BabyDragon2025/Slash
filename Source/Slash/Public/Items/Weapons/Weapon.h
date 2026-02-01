@@ -8,6 +8,7 @@
 #include "Weapon.generated.h"
 
 class USoundBase;
+class UBoxComponent; //盒子组件
 
 /**
  * 
@@ -17,6 +18,8 @@ class SLASH_API AWeapon : public AItem
 {
 	GENERATED_BODY()
 public:
+	AWeapon();//武器的构造函数，初始化武器
+
 	void Equip(USceneComponent* InParent,FName InSocketName);
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
 	//自定义一个函数来处理装备的武器//传入角色和插槽名字
@@ -31,4 +34,7 @@ private:
 	
 	UPROPERTY(EditAnywhere,Category="Weapon Properties")
 	USoundBase* EquipSound; //建立武器声音变量。
+
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UBoxComponent* WeaponBox;//武器的盒子组件
 };
