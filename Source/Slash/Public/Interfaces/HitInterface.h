@@ -22,5 +22,5 @@ class SLASH_API IHitInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void GetHit() = 0;//击中函数，设置成虚函数，这样可以在实现击中接口的任何类中重写它
+	virtual void GetHit(const FVector& ImpactPoint) = 0;//击中函数，设置成虚函数，这样可以在实现击中接口的任何类中重写它
 };
