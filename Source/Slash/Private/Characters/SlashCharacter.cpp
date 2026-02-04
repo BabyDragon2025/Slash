@@ -219,9 +219,9 @@ void ASlashCharacter::PlayAttackMontage()
 }
 
 //可以调用这个函数来播放装备蒙太奇，并传入装备（物品/武器）或卸下（物品/武器）的部分名称
-void ASlashCharacter::PlayEquipMontage(FName SectionName) 
+void ASlashCharacter::PlayEquipMontage(const FName& SectionName)
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();//获取动画实例
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();//从网络体中获取动画实例
 	if (AnimInstance && EquipMontage)
 	{
 		AnimInstance->Montage_Play(EquipMontage);

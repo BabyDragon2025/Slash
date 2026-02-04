@@ -48,7 +48,7 @@ protected:
 	void AttackEnd(); //攻击结束通知
 	bool CanAttack();// 是否可以攻击
 
-	void PlayEquipMontage(FName SectionName);//装备动画的函数
+	void PlayEquipMontage(const FName& SectionName);//装备动画的函数
 	bool CanDisarm();//检查卸下播放装备武器的蒙太奇动画的条件
 	bool CanArm();//检查装备武器的蒙太奇动画的条件
 
