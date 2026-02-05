@@ -56,7 +56,7 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::GetHit(const FVector& ImpactPoint)
 {
 	DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);//测试该函数。
-	PlayHitReactMontage(FName("FromLeft"));//播放左边受击动画
+	
 
 	const FVector Forward = GetActorForwardVector();//敌人的前向向量。GetActorForwardVector()返回的 Forward 向量确实是单位向量（模长为 1），这是虚幻引擎的默认设计
 	
@@ -77,6 +77,25 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	{
 		Theta *= -1.f;
 	}
+
+	//根据角度选择播放的动画
+	FName Section("FromBack");
+	if (Theta >= -45.f && Theta < 45.f)
+	{
+		Section = FName("FromFront");
+	}
+	else if (Theta >= -135.f && Theta < -45.f)
+	{
+		Section = FName("FromLeft");
+	}
+	else if (Theta >= 45.f && Theta < 135.f)
+	{
+		Section = FName("FromRight");
+	}
+
+	PlayHitReactMontage(Section);//播放左边受击动画
+
+
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100, 5.f, FColor::Blue, 5.f);
 
 	if (GEngine)
