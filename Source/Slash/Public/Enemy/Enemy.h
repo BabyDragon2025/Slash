@@ -33,6 +33,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* HitSound; //该变量存储MetaSound资产类型的值
 
+	//击中的效果粒子，可以是血液，小石头等等
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UParticleSystem* HitParticles;
+
 protected:
 	
 	virtual void BeginPlay() override;

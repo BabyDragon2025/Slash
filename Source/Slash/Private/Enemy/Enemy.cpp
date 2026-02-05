@@ -56,7 +56,7 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AEnemy::GetHit(const FVector& ImpactPoint)
 {
-	DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);//测试该函数。
+	//DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);//测试该函数。
 
 	DirectionalHitReact(ImpactPoint);
 
@@ -66,6 +66,15 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 		UGameplayStatics::PlaySoundAtLocation(
 			this,
 			HitSound,
+			ImpactPoint
+		);
+	}
+	//设置击中效果。对象的世界、种类、位置。  //这里的函数内部的GetWorld()用this也可以
+	if (HitParticles && GetWorld())
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticles,
 			ImpactPoint
 		);
 	}
@@ -110,7 +119,7 @@ void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
 
 	PlayHitReactMontage(Section);//播放左边受击动画
 
-
+	/*
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100, 5.f, FColor::Blue, 5.f);
 
 	if (GEngine)
@@ -120,5 +129,6 @@ void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
 	//绘制调试箭头
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
+	*/
 }
 
