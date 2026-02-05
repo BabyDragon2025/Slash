@@ -5,6 +5,7 @@
 #include"Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Slash/DebugMacros.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AEnemy::AEnemy()
 {
@@ -56,5 +57,26 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 {
 	DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);//测试该函数。
 	PlayHitReactMontage(FName("FromLeft"));//播放左边受击动画
+
+	const FVector Forward = GetActorForwardVector();//敌人的前向向量。GetActorForwardVector()返回的 Forward 向量确实是单位向量（模长为 1），这是虚幻引擎的默认设计
+	
+	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);//击中点的Z向量与敌人的Z方向向量一致，让调试箭头和角度与地面平行
+	const FVector ToHit = (ImpactLowered - GetActorLocation()).GetSafeNormal();//敌人的击中向量。用GetSafeNormal()来把向量结果归一化变成单位向量
+
+	//Forward*ToHit = |Forward||ToHit|*cos(theta)
+	//|Forward|=|ToHit|=1,所以,Forward*ToHit = cos(theta)
+	const double CosTheta = FVector::DotProduct(Forward, ToHit);
+	//余弦角度再取反函数可以得到角度
+	double Theta = FMath::Acos(CosTheta);
+	//把弧度转换成度数，这样弧度单位转换成度的单位
+	Theta = FMath::RadiansToDegrees(Theta);
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta:%f"), Theta));
+	}
+	//绘制调试箭头
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
 }
 
