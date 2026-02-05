@@ -58,8 +58,13 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);//测试该函数。
 	
 
+	DirectionalHitReact(ImpactPoint);
+}
+
+void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
+{
 	const FVector Forward = GetActorForwardVector();//敌人的前向向量。GetActorForwardVector()返回的 Forward 向量确实是单位向量（模长为 1），这是虚幻引擎的默认设计
-	
+
 	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);//击中点的Z向量与敌人的Z方向向量一致，让调试箭头和角度与地面平行
 	const FVector ToHit = (ImpactLowered - GetActorLocation()).GetSafeNormal();//敌人的击中向量。用GetSafeNormal()来把向量结果归一化变成单位向量
 

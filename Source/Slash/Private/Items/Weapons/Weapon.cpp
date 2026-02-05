@@ -76,6 +76,12 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 
 	TArray<AActor*>ActorsToIgnore;
 	ActorsToIgnore.Add(this);//确保我们不会击中武器本身
+
+	for (AActor* Actor : IgnoreActors)
+	{
+		ActorsToIgnore.AddUnique(Actor);
+	}
+
 	FHitResult BoxHit;
 	UKismetSystemLibrary::BoxTraceSingle(
 		this,
@@ -97,5 +103,6 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		{
 			HitInterface->GetHit(BoxHit.ImpactPoint);
 		}
+		IgnoreActors.AddUnique(BoxHit.GetActor());//知道武器命中哪个角色，AddUnique则可以不重复添加角色。
 	}
 }

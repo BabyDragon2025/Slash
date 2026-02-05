@@ -77,6 +77,7 @@ void ASlashCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type Collisio
 	if (EquippedWeapon && EquippedWeapon->GetWeaponBox())
 	{
 		EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
+		EquippedWeapon->IgnoreActors.Empty();//关闭武器碰撞时(攻击结束后)清空命中的对象
 	}
 }
 

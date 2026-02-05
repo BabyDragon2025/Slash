@@ -23,6 +23,8 @@ public:
 
 	virtual void GetHit(const FVector& ImpactPoint) override;
 
+	void DirectionalHitReact(const FVector& ImpactPoint);
+
 private:
 	//动画蒙太奇，这里保留蒙太奇变量，未来可能添加更多
 	UPROPERTY(EditDefaultsOnly, Category = Montages)

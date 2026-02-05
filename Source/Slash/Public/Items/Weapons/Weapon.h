@@ -21,8 +21,9 @@ public:
 	AWeapon();//武器的构造函数，初始化武器
 
 	void Equip(USceneComponent* InParent,FName InSocketName);
-	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);
-	//自定义一个函数来处理装备的武器//传入角色和插槽名字
+	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);//自定义一个函数来处理装备的武器//传入角色和插槽名字
+	
+	TArray<AActor*>IgnoreActors;//记录被击中的角色
 protected:
 	virtual void BeginPlay() override;
 	
@@ -46,6 +47,8 @@ private:
 	USceneComponent* BoxTraceStart;
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceEnd;
+
+	
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }
