@@ -71,6 +71,14 @@ void AEnemy::GetHit(const FVector& ImpactPoint)
 	//把弧度转换成度数，这样弧度单位转换成度的单位
 	Theta = FMath::RadiansToDegrees(Theta);
 
+	//如果叉积方向向下，代表右边被击中，角度为负数
+	const FVector CrossProduct = FVector::CrossProduct(Forward, ToHit);
+	if (CrossProduct.Z < 0)
+	{
+		Theta *= -1.f;
+	}
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100, 5.f, FColor::Blue, 5.f);
+
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta:%f"), Theta));
