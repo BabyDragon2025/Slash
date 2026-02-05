@@ -30,6 +30,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
 
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase* HitSound; //该变量存储MetaSound资产类型的值
+
 protected:
 	
 	virtual void BeginPlay() override;

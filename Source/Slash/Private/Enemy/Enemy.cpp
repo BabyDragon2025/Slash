@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Slash/DebugMacros.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 AEnemy::AEnemy()
 {
@@ -56,9 +57,18 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::GetHit(const FVector& ImpactPoint)
 {
 	DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);//测试该函数。
-	
 
 	DirectionalHitReact(ImpactPoint);
+
+	//播放被击中的声音
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			HitSound,
+			ImpactPoint
+		);
+	}
 }
 
 void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)
