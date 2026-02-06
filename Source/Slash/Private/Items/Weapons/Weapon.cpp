@@ -104,5 +104,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 			HitInterface->GetHit(BoxHit.ImpactPoint);
 		}
 		IgnoreActors.AddUnique(BoxHit.GetActor());//知道武器命中哪个角色，AddUnique则可以不重复添加角色。
+
+		CreateFields(BoxHit.ImpactPoint);
 	}
 }

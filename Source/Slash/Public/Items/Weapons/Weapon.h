@@ -35,6 +35,9 @@ protected:
 	//碰撞箱重叠
 	UFUNCTION()
 	void OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateFields(const FVector& FieldLocation);//场系统的函数。从C++里调用它，传入那些场位置，其余在蓝图处理。
 private:
 	
 	UPROPERTY(EditAnywhere,Category="Weapon Properties")
