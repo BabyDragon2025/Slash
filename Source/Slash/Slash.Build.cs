@@ -10,7 +10,7 @@ public class Slash : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
         //在这里包含指定的模块,拼写一定要正确
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"HairStrandsCore", "Niagara" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" ,"HairStrandsCore", "Niagara" , "GeometryCollectionEngine" });
 
         PrivateDependencyModuleNames.AddRange(new string[] {  });
 
