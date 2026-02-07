@@ -22,5 +22,7 @@ class SLASH_API IHitInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void GetHit(const FVector& ImpactPoint) = 0;//击中函数，设置成虚函数，这样可以在实现击中接口的任何类中重写它
+	//使成为原生蓝图事件，这样它有两个版本，蓝图与C++，都可以实现该函数。同时虚函数去掉。
+	UFUNCTION(BlueprintNativeEvent)
+	void GetHit(const FVector& ImpactPoint);//击中函数，设置成虚函数，这样可以在实现击中接口的任何类中重写它
 };

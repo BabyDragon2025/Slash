@@ -101,7 +101,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor());//把击中的对象转换成击中接口
 		if (HitInterface)
 		{
-			HitInterface->GetHit(BoxHit.ImpactPoint);
+			HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);//执行这个事件，确保蓝图被触发
 		}
 		IgnoreActors.AddUnique(BoxHit.GetActor());//知道武器命中哪个角色，AddUnique则可以不重复添加角色。
 
