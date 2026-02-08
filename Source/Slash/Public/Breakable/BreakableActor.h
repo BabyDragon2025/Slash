@@ -33,7 +33,7 @@ protected:
 	class UCapsuleComponent* Capsule;//胶囊体，确保物品碎后碰撞关闭。
 private:	
 
-	//TSubclassOf是一个包装器，把想要的类包装在里面,减少选择错误类的可能。所以不用原始的UClass
+	//TSubclassOf是一个包装器，可以存着UClass指针，把想要的类包装在里面,减少选择错误类的可能。所以不用原始的UClass
 	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
-	TSubclassOf<class ATreasure> TreasureClass; //UClass使生成的角色是蓝图，而不是原始的C++类
+	TArray<TSubclassOf<class ATreasure>> TreasureClasses; //UClass使生成的角色是蓝图，而不是原始的C++类//这里的TArray存着多个宝藏蓝图
 };

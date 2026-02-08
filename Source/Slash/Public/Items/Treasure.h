@@ -21,4 +21,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* PickupSound; //物品拾取的声音
 
+	UPROPERTY(EditAnywhere, Category = "Treasure Properties")
+	int32 Gold;//金币价值/黄金数量
 };
