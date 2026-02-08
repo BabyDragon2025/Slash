@@ -76,3 +76,8 @@ DerivedDataCache/*
 #资源文件
 Content/
 Assets/
+
+*.png
+*.tga
+*.jpg
+*.jpeg
