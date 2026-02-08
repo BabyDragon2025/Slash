@@ -26,8 +26,14 @@ protected:
 	
 	virtual void BeginPlay() override;
 
-private:	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UGeometryCollectionComponent* GeometryCollection;//几何集合组件
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UCapsuleComponent* Capsule;//胶囊体，确保物品碎后碰撞关闭。
+private:	
+
+	//TSubclassOf是一个包装器，把想要的类包装在里面,减少选择错误类的可能。所以不用原始的UClass
+	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
+	TSubclassOf<class ATreasure> TreasureClass; //UClass使生成的角色是蓝图，而不是原始的C++类
 };
