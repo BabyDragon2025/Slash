@@ -5,6 +5,7 @@
 #include"Slash/DebugMacros.h"
 #include"Components/SphereComponent.h" //球形组件的头文件
 #include"Characters/SlashCharacter.h" // 有了它，可以在OnSphereOverlap中将其转换为SlashCharacter
+#include "NiagaraComponent.h" //该头文件记得加上Niagara模块才可以使用
 
 
 // Sets default values
@@ -17,6 +18,9 @@ AItem::AItem()
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere")); //创建球形组件
 	Sphere->SetupAttachment(GetRootComponent()); 
+
+	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Embers"));////创建构造球形组件
+	EmbersEffect->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
