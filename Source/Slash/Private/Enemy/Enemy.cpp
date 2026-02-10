@@ -8,7 +8,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AttributeComponent.h"
-#include "Components/WidgetComponent.h"
+#include "HUD/HealthBarComponent.h"
+
 
 
 AEnemy::AEnemy()
@@ -26,7 +27,7 @@ AEnemy::AEnemy()
 	
 	////构造敌人的属性
 	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
-	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 }
 
@@ -35,6 +36,10 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (HealthBarWidget)
+	{
+		HealthBarWidget->SetHealthPercent(1.f);//设置健康条默认值
+	}
 }
 
 void AEnemy::PlayHitReactMontage(const FName& SectionName)
