@@ -8,6 +8,7 @@
 #include "Enemy.generated.h"
 
 class UAnimMontage;
+class UAttributeComponent;
 
 UCLASS()
 class SLASH_API AEnemy : public ACharacter,public IHitInterface //继承两个父类
@@ -26,6 +27,10 @@ public:
 	void DirectionalHitReact(const FVector& ImpactPoint);
 
 private:
+
+	UPROPERTY(VisibleAnywhere)
+	UAttributeComponent* Attributes;//自定义组件：属性
+
 	//动画蒙太奇，这里保留蒙太奇变量，未来可能添加更多
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
@@ -43,7 +48,6 @@ protected:
 
 	//播放蒙太奇函数
 	void PlayHitReactMontage(const FName& SectionName);
-public:	
 	
 	
 
