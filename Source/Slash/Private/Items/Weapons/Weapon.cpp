@@ -33,8 +33,11 @@ void AWeapon::BeginPlay()
 }
 
 //处理物品附加操作的函数
-void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)  
+void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
 {
+	//设置：装备这把武器后，它的所有者和发起者就会自动设置为持有它的角色
+	SetOwner(NewOwner);
+	SetInstigator(NewInstigator);
 	AttachMeshToSocket(InParent, InSocketName); //场景组件作为父级，TransformRules作为规则，附加对象InSocketName
 	ItemState = EItemState::EIS_Equipped;//物品状态设置为：已装备
 	if (EquipSound) //在指定位置播放声音
@@ -111,5 +114,13 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		IgnoreActors.AddUnique(BoxHit.GetActor());//知道武器命中哪个角色，AddUnique则可以不重复添加角色。
 
 		CreateFields(BoxHit.ImpactPoint);
+
+		UGameplayStatics::ApplyDamage(
+			BoxHit.GetActor(),
+			Damage,
+			GetInstigator()->GetController(),
+			this,
+			UDamageType::StaticClass()
+		);
 	}
 }

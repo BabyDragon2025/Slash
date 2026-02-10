@@ -122,9 +122,10 @@ void ASlashCharacter::EKeyPressed()
 {
 	//识别武器
 	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
+
 	if (OverlappingWeapon)
 	{
-		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon; //角色状态，放映我们是否装备了武器
 		OverlappingItem = nullptr; //置空重叠物品
 		EquippedWeapon = OverlappingWeapon; //用一个变量存储已装备的武器

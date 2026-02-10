@@ -20,7 +20,7 @@ class SLASH_API AWeapon : public AItem
 public:
 	AWeapon();//武器的构造函数，初始化武器
 
-	void Equip(USceneComponent* InParent,FName InSocketName);
+	void Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator);
 	void AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName);//自定义一个函数来处理装备的武器//传入角色和插槽名字
 	
 	TArray<AActor*>IgnoreActors;//记录被击中的角色
@@ -51,7 +51,8 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceEnd;
 
-	
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	float Damage = 20.f;
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }

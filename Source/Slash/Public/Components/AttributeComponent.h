@@ -29,4 +29,10 @@ private:
 	//最大生命值
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
 	float MaxHealth;
+
+public:
+	//处理健康变量的变化
+	void ReceiveDamage(float Damage);
+
+	float GetHealthPercent();//获取健康值百分比
 };
