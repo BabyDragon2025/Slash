@@ -52,7 +52,7 @@ private:
 	USceneComponent* BoxTraceEnd;
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
-	float Damage = 20.f;
+	float Damage = 20.f;//…À∫¶…Ë÷√
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }
