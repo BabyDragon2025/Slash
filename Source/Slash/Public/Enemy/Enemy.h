@@ -49,6 +49,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
 	UParticleSystem* HitParticles;
 
+	UPROPERTY()
+	AActor* CombatTarget;//战斗目标
+
+	UPROPERTY(EditAnywhere)
+	double CombatRadius = 1000.f;//战斗半径
 
 protected:
 	
