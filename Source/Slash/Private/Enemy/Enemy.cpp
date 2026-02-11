@@ -41,8 +41,8 @@ void AEnemy::BeginPlay()
 
 void AEnemy::Die()
 {
-	//²¥·ÅËÀÍöÃÉÌ«Ææ
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();//´ÓÍøÂçÌåÖÐ»ñÈ¡¶¯»­ÊµÀý
+	//²¥·ÅËÀÍöÃÉÌ«Ææ¶¯»­
 	if (AnimInstance && DeathMontage)
 	{
 		AnimInstance->Montage_Play(DeathMontage);
@@ -53,21 +53,27 @@ void AEnemy::Die()
 		{
 		case 0:
 			SectionName = FName("Death1");
+			DeathPose = EDeathPose::EDP_Death1;
 			break;
 		case 1:
 			SectionName = FName("Death2");
+			DeathPose = EDeathPose::EDP_Death2;
 			break;
 		case 2:
 			SectionName = FName("Death3");
+			DeathPose = EDeathPose::EDP_Death3;
 			break;
 		case 3:
 			SectionName = FName("Death4");
+			DeathPose = EDeathPose::EDP_Death4;
 			break;
 		case 4:
 			SectionName = FName("Death5");
+			DeathPose = EDeathPose::EDP_Death5;
 			break;
 		case 5:
 			SectionName = FName("Death6");
+			DeathPose = EDeathPose::EDP_Death6;
 			break;
 		default:
 			break;
@@ -75,6 +81,9 @@ void AEnemy::Die()
 
 		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
 	}
+
+	//ËÀÍöºó½ûÓÃ½ºÄÒÌåÅö×² 
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AEnemy::PlayHitReactMontage(const FName& SectionName)

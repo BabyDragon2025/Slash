@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/HitInterface.h"//让敌人可以继承接口里的函数和类
+#include "Characters/CharacterType.h"
 #include "Enemy.generated.h"
 
 class UAnimMontage;
@@ -48,6 +49,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
 	UParticleSystem* HitParticles;
 
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -57,6 +59,7 @@ protected:
 	//播放蒙太奇函数
 	void PlayHitReactMontage(const FName& SectionName);
 	
-	
 
+	UPROPERTY(BlueprintReadOnly)
+	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 };
