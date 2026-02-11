@@ -37,6 +37,9 @@ private:
 	//动画蒙太奇，这里保留蒙太奇变量，未来可能添加更多
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
+	//死亡蒙太奇变量
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* DeathMontage;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase* HitSound; //该变量存储MetaSound资产类型的值
@@ -48,6 +51,8 @@ private:
 protected:
 	
 	virtual void BeginPlay() override;
+
+	void Die();//播放死亡的蒙太奇
 
 	//播放蒙太奇函数
 	void PlayHitReactMontage(const FName& SectionName);

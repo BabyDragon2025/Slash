@@ -33,6 +33,8 @@ private:
 public:
 	//处理健康变量的变化
 	void ReceiveDamage(float Damage);
-
-	float GetHealthPercent();//获取健康值百分比
+	//获取健康值百分比
+	float GetHealthPercent();
+	//判断是否活着
+	bool IsAlive();
 };
