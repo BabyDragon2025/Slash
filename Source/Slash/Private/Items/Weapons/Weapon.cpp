@@ -10,6 +10,7 @@
 #include "Interfaces/HitInterface.h"
 #include "NiagaraComponent.h"
 
+
 AWeapon::AWeapon()
 {
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box"));
