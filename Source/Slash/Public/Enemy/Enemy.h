@@ -11,6 +11,7 @@
 class UAnimMontage;
 class UAttributeComponent;
 class UHealthBarComponent;
+class UPawnSensingComponent;
 
 UCLASS()
 class SLASH_API AEnemy : public ACharacter,public IHitInterface //继承两个父类
@@ -31,11 +32,18 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 private:
 
+	//组件(Component)
+
+
+
 	UPROPERTY(VisibleAnywhere)
 	UAttributeComponent* Attributes;//自定义组件：属性
 
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;//控件组件，代表血量。
+
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent* PawnSensing; //感知组件
 
 	//动画蒙太奇，这里保留蒙太奇变量，未来可能添加更多
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
@@ -80,6 +88,8 @@ private:
 
 	UPROPERTY(EditAnywhere,Category="AI Navigation")
 	float WaitMin = 5.f;
+
+	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
 
 protected:
@@ -92,6 +102,9 @@ protected:
 
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
+
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);//绑定到委托
 
 	//播放蒙太奇函数
 	void PlayHitReactMontage(const FName& SectionName);

@@ -2,16 +2,18 @@
 
 
 #include "Enemy/Enemy.h"
-#include"Components/SkeletalMeshComponent.h"
+#include "AIController.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Slash/DebugMacros.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"//人物移动头文件
+#include "Perception/PawnSensingComponent.h"
 #include "Components/AttributeComponent.h"
 #include "HUD/HealthBarComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"//人物移动头文件
-#include "AIController.h"
 #include "navigation/PathFollowingComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "Slash/DebugMacros.h"
 
 
 AEnemy::AEnemy()
@@ -38,6 +40,11 @@ AEnemy::AEnemy()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
+	//设置感知组件
+	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensing->SightRadius = 4000.f;
+	PawnSensing->SetPeripheralVisionAngle(45.f);
+
 }
 
 
@@ -60,7 +67,10 @@ void AEnemy::BeginPlay()
 	//控制敌人巡逻移动
 	MoveToTarget(PatrolTarget);
 
-	
+	if (PawnSensing)
+	{
+		PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);//绑定
+	}
 }
 
 void AEnemy::Die()
@@ -158,6 +168,11 @@ AActor* AEnemy::ChoosePatrolTarget()
 		return ValidTargets[TargetSelection];
 	}
 	return nullptr;
+}
+
+void AEnemy::PawnSeen(APawn* SeenPawn)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Pawn Seen!"));
 }
 
 void AEnemy::PlayHitReactMontage(const FName& SectionName)
