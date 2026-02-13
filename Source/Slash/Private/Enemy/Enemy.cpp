@@ -133,8 +133,6 @@ bool AEnemy::InTargetRange(AActor* Target, double Radius)
 {
 	if (Target == nullptr) return false;
 	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();//得到敌人与目标的距离
-	DRAW_SPHERE_SingleFrame(GetActorLocation());
-	DRAW_SPHERE_SingleFrame(Target->GetActorLocation());
 
 	return DistanceToTarget <= Radius;
 }
@@ -184,7 +182,6 @@ void AEnemy::PawnSeen(APawn* SeenPawn)
 		{
 			EnemyState = EEnemyState::EES_Chasing;
 			MoveToTarget(CombatTarget);
-			UE_LOG(LogTemp, Warning, TEXT("Pawn Seen , Chase Palyer"));
 		}
 	}
 }
@@ -242,7 +239,7 @@ void AEnemy::CheckCombatTarget()
 		EnemyState = EEnemyState::EES_Patrolling;
 		GetCharacterMovement()->MaxWalkSpeed = 125.f;
 		MoveToTarget(PatrolTarget);
-		UE_LOG(LogTemp, Warning, TEXT("Lose Interest"));
+		
 	}
 	else if (!InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Chasing)
 	{
@@ -250,14 +247,14 @@ void AEnemy::CheckCombatTarget()
 		EnemyState = EEnemyState::EES_Chasing;
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		MoveToTarget(CombatTarget);
-		UE_LOG(LogTemp, Warning, TEXT("Chase Player"));
+		
 	}
 	else if (InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Attacking)
 	{
 		//攻击范围以内，攻击主角
 		EnemyState = EEnemyState::EES_Attacking;
 		//播放攻击动画
-		UE_LOG(LogTemp, Warning, TEXT("Attack"));
+		
 	}
 }
 
@@ -369,7 +366,12 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());//时刻更新我们的健康值
 		
 	}
-	CombatTarget = EventInstigator->GetPawn();//如果敌人收到伤害，就会设置战斗目标
+	//如果敌人收到伤害,被激怒的逻辑
+	CombatTarget = EventInstigator->GetPawn();
+	EnemyState = EEnemyState::EES_Chasing;
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	MoveToTarget(CombatTarget);
+
 	return DamageAmount;
 }
 
