@@ -230,11 +230,15 @@ void AEnemy::CheckCombatTarget()
 {
 	if (!InTargetRange(CombatTarget, CombatRadius))
 	{
+		//战斗半径以外，失去兴趣
 		CombatTarget = nullptr;//超出攻击范围则不设置战斗目标
 		if (HealthBarWidget)
 		{
 			HealthBarWidget->SetVisibility(false);//超出范围隐藏血条
 		}
+		EnemyState = EEnemyState::EES_Patrolling;
+		GetCharacterMovement()->MaxWalkSpeed = 125.f;
+		MoveToTarget(PatrolTarget);
 	}
 }
 
