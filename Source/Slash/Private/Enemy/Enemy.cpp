@@ -174,15 +174,18 @@ AActor* AEnemy::ChoosePatrolTarget()
 void AEnemy::PawnSeen(APawn* SeenPawn)
 {
 	if (EnemyState == EEnemyState::EES_Chasing) return;//确保只调用一次MoveToTarget
-
 	if (SeenPawn->ActorHasTag(FName("SlashCharacter")))
-	{
-		EnemyState = EEnemyState::EES_Chasing;
+	{	
 		GetWorldTimerManager().ClearTimer(PatrolTimer);
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
 		CombatTarget = SeenPawn;
-		MoveToTarget(CombatTarget);
-		UE_LOG(LogTemp, Warning, TEXT("Seen Pawn,now Chasing"));
+
+		if (EnemyState != EEnemyState::EES_Attacking)
+		{
+			EnemyState = EEnemyState::EES_Chasing;
+			MoveToTarget(CombatTarget);
+			UE_LOG(LogTemp, Warning, TEXT("Pawn Seen , Chase Palyer"));
+		}
 	}
 }
 
@@ -239,6 +242,22 @@ void AEnemy::CheckCombatTarget()
 		EnemyState = EEnemyState::EES_Patrolling;
 		GetCharacterMovement()->MaxWalkSpeed = 125.f;
 		MoveToTarget(PatrolTarget);
+		UE_LOG(LogTemp, Warning, TEXT("Lose Interest"));
+	}
+	else if (!InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Chasing)
+	{
+		//攻击范围之外，追赶主角
+		EnemyState = EEnemyState::EES_Chasing;
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		MoveToTarget(CombatTarget);
+		UE_LOG(LogTemp, Warning, TEXT("Chase Player"));
+	}
+	else if (InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Attacking)
+	{
+		//攻击范围以内，攻击主角
+		EnemyState = EEnemyState::EES_Attacking;
+		//播放攻击动画
+		UE_LOG(LogTemp, Warning, TEXT("Attack"));
 	}
 }
 

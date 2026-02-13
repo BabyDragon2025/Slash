@@ -63,7 +63,10 @@ private:
 	AActor* CombatTarget;//战斗目标
 
 	UPROPERTY(EditAnywhere)
-	double CombatRadius = 1000.f;//战斗半径
+	double CombatRadius = 500.f;//进入战斗半径
+
+	UPROPERTY(EditAnywhere)
+	double AttackRadius = 150.f;//攻击半径
 
 	//导航
 
