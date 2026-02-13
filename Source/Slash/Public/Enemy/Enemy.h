@@ -22,6 +22,8 @@ public:
 	AEnemy();
 
 	virtual void Tick(float DeltaTime) override;
+	void CheckPatrolTarget();
+	void CheckCombatTarget();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;//GetHit_Implementation覆盖了GitHit，因为GitHit设置成了原生蓝图，不再是虚函数。
 	void DirectionalHitReact(const FVector& ImpactPoint);
@@ -72,6 +74,14 @@ private:
 	UPROPERTY(EditAnywhere)
 	double PatrolRadius = 200.f;//巡逻范围
 
+	//定时器
+	FTimerHandle PatrolTimer;
+	void PatrolTimerFinish();
+
+	UPROPERTY(EditAnywhere,Category="AI Navigation")
+	float WaitMin = 5.f;
+	float WaitMax = 10.f;
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -79,6 +89,9 @@ protected:
 	void Die();//播放死亡的蒙太奇
 	//判断我是否在目标范围内
 	bool InTargetRange(AActor* Target,double Radius);
+
+	void MoveToTarget(AActor* Target);
+	AActor* ChoosePatrolTarget();
 
 	//播放蒙太奇函数
 	void PlayHitReactMontage(const FName& SectionName);
