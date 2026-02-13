@@ -30,3 +30,12 @@ enum class EDeathPose : uint8
 	EDP_Death5 UMETA(DisplayName = "Death5"),
 	EDP_Death6 UMETA(DisplayName = "Death6")
 };
+
+//敌人行为状态//ps：枚举变量有默认值。第一个是0，后面1、2、3...
+UENUM(BlueprintType)
+enum class EEnemyState : uint8
+{
+	EES_Patrolling UMETA(DisplayName = "Patrolling"), 
+	EES_Chasing UMETA(DisplayName = "Chasing"),
+	EES_Attacking UMETA(DisplayName = "Attacking")
+};

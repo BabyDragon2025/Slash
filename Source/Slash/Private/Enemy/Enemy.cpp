@@ -170,9 +170,20 @@ AActor* AEnemy::ChoosePatrolTarget()
 	return nullptr;
 }
 
+//设置发现目标后的逻辑
 void AEnemy::PawnSeen(APawn* SeenPawn)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Pawn Seen!"));
+	if (EnemyState == EEnemyState::EES_Chasing) return;//确保只调用一次MoveToTarget
+
+	if (SeenPawn->ActorHasTag(FName("SlashCharacter")))
+	{
+		EnemyState = EEnemyState::EES_Chasing;
+		GetWorldTimerManager().ClearTimer(PatrolTimer);
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		CombatTarget = SeenPawn;
+		MoveToTarget(CombatTarget);
+		UE_LOG(LogTemp, Warning, TEXT("Seen Pawn,now Chasing"));
+	}
 }
 
 void AEnemy::PlayHitReactMontage(const FName& SectionName)
@@ -190,12 +201,18 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//检查战斗目标
-	CheckCombatTarget();
 
-	//检查巡逻目标
-	CheckPatrolTarget();
-	
+	if (EnemyState > EEnemyState::EES_Patrolling) 
+	{
+		//检查战斗目标
+		CheckCombatTarget();
+	}
+	else
+	{
+		//检查巡逻目标
+		CheckPatrolTarget();
+	}
+
 }
 
 void AEnemy::CheckPatrolTarget()

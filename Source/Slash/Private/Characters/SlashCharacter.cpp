@@ -45,6 +45,7 @@ void ASlashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Tags.Add(FName("SlashCharacter"));//给主角添加标签，便于识别
 }
 
 
