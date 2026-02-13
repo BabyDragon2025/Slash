@@ -10,6 +10,8 @@
 #include "Components/AttributeComponent.h"
 #include "HUD/HealthBarComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"//人物移动头文件
+#include "AIController.h"
+#include "navigation/PathFollowingComponent.h"
 
 
 AEnemy::AEnemy()
@@ -47,6 +49,24 @@ void AEnemy::BeginPlay()
 	if (HealthBarWidget)
 	{
 		HealthBarWidget->SetVisibility(false);//一开始不显示
+	}
+
+	EnemyController = Cast <AAIController>(GetController());
+	//控制敌人巡逻移动
+	if (EnemyController && PatrolTarget)
+	{
+		FAIMoveRequest MoveRequest;
+		MoveRequest.SetGoalActor(PatrolTarget);
+		MoveRequest.SetAcceptanceRadius(15.f);
+		FNavPathSharedPtr NavPath;
+		EnemyController->MoveTo(MoveRequest, &NavPath);
+		TArray<FNavPathPoint>& PathPoints = NavPath->GetPathPoints();
+		//打印路径点
+		for (auto& Point : PathPoints)
+		{
+			const FVector& Location = Point.Location;
+			DrawDebugSphere(GetWorld(), Location, 12.f, 12, FColor::Green, false, 10.f);
+		}
 	}
 }
 
@@ -106,6 +126,15 @@ void AEnemy::Die()
 	SetLifeSpan(5.f);
 }
 
+bool AEnemy::InTargetRange(AActor* Target, double Radius)
+{
+	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();//得到敌人与目标的距离
+	DRAW_SPHERE_SingleFrame(GetActorLocation());
+	DRAW_SPHERE_SingleFrame(Target->GetActorLocation());
+
+	return DistanceToTarget <= Radius;
+}
+
 void AEnemy::PlayHitReactMontage(const FName& SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();//从网络体中获取动画实例
@@ -123,13 +152,43 @@ void AEnemy::Tick(float DeltaTime)
 
 	if (CombatTarget)
 	{
-		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();//得到敌人与战斗目标的距离
-		if (DistanceToTarget > CombatRadius)
+		if (!InTargetRange(CombatTarget,CombatRadius))
 		{
 			CombatTarget = nullptr;//超出攻击范围则不设置战斗目标
 			if (HealthBarWidget)
 			{
 				HealthBarWidget->SetVisibility(false);//超出范围隐藏血条
+			}
+		}
+	}
+
+	//检查巡逻目标
+	if (PatrolTarget && EnemyController)
+	{
+		if (InTargetRange(PatrolTarget, PatrolRadius))
+		{
+			//防止重复一个巡逻点
+			TArray<AActor*>ValidTargets;
+			for (AActor* Target : PatrolTargets)
+			{
+				if (Target != PatrolTarget)
+				{
+					ValidTargets.AddUnique(Target);
+				}
+			}
+
+			const int32 NumPatrolTargets = ValidTargets.Num();
+			if (NumPatrolTargets > 0)
+			{
+				const int32 TargetSelection = FMath::RandRange(0, NumPatrolTargets - 1);
+				AActor* Target = ValidTargets[TargetSelection];
+				PatrolTarget = Target;
+
+				//控制敌人巡逻移动
+				FAIMoveRequest MoveRequest;
+				MoveRequest.SetGoalActor(PatrolTarget);
+				MoveRequest.SetAcceptanceRadius(15.f);
+				EnemyController->MoveTo(MoveRequest);
 			}
 		}
 	}

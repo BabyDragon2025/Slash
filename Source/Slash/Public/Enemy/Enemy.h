@@ -55,11 +55,30 @@ private:
 	UPROPERTY(EditAnywhere)
 	double CombatRadius = 1000.f;//战斗半径
 
+	//导航
+
+	//敌人控制器
+	UPROPERTY()
+	class AAIController* EnemyController;
+
+	//常规的巡逻目标
+	UPROPERTY(EditInstanceOnly,Category="AI Navigation")
+	AActor* PatrolTarget;
+
+	//存储巡逻目标
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	TArray<AActor*>PatrolTargets;
+
+	UPROPERTY(EditAnywhere)
+	double PatrolRadius = 200.f;//巡逻范围
+
 protected:
 	
 	virtual void BeginPlay() override;
 
 	void Die();//播放死亡的蒙太奇
+	//判断我是否在目标范围内
+	bool InTargetRange(AActor* Target,double Radius);
 
 	//播放蒙太奇函数
 	void PlayHitReactMontage(const FName& SectionName);
