@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include"CharacterType.h"
 #include "SlashCharacter.generated.h"
 
@@ -12,10 +12,10 @@ class UCameraComponent;//提前声明摄像机组件
 class UGroomComponent;//提前声明毛发组件
 class AItem; 
 class UAnimMontage;
-class AWeapon;
+
 
 UCLASS()
-class SLASH_API ASlashCharacter : public ACharacter
+class SLASH_API ASlashCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -25,9 +25,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//设置碰撞开关。
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled); 
 
 
 protected:
@@ -39,14 +36,14 @@ protected:
 	void Turn(float Value);
 	void LookUp(float Value);
 	void EKeyPressed(); //这是一个动作映射（装备武器），因为是一次性，所以没有参数。
-	void Attack(); //攻击的回调函数，用来绑定攻击键。
+	virtual void Attack() override; //攻击的回调函数，用来绑定攻击键。
 
 	//播放蒙太奇动画的函数//重构函数
-	void PlayAttackMontage();
+	virtual void PlayAttackMontage() override;
 
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd(); //攻击结束通知
-	bool CanAttack();// 是否可以攻击
+	virtual void AttackEnd() override; //攻击结束通知
+
+	virtual bool CanAttack() override;// 是否可以攻击
 
 	void PlayEquipMontage(const FName& SectionName);//装备动画的函数
 	bool CanDisarm();//检查卸下播放装备武器的蒙太奇动画的条件
@@ -82,12 +79,9 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	AItem* OverlappingItem;  //创建一个重叠的游戏物品，需要在物品重叠时，才能从物品类里设置这个属性
 
-	UPROPERTY(VisibleAnywhere,Category=Weapon)
-	AWeapon* EquippedWeapon;//表示当前持有的武器
+	
 
-	//动画蒙太奇，这里保留蒙太奇变量，未来可能添加更多
-	UPROPERTY(EditDefaultsOnly,Category=Montages)
-	UAnimMontage* AttackMontage;
+	
 	//装备武器的蒙太奇动画
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
