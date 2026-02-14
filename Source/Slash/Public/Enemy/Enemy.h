@@ -27,15 +27,20 @@ public:
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;//GetHit_Implementation覆盖了GitHit，因为GitHit设置成了原生蓝图，不再是虚函数。
 	//造成伤害
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-private:
 
-	
+	virtual void Destroyed() override;
+
+private:
 
 	UPROPERTY(VisibleAnywhere)
 	UHealthBarComponent* HealthBarWidget;//控件组件，代表血量。
 
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent* PawnSensing; //感知组件
+
+	//生成敌人的武器
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AWeapon> WeaponClasss;
 
 
 	UPROPERTY()
