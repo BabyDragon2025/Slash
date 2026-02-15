@@ -12,7 +12,6 @@
 #include"Items/Weapons/Weapon.h"
 #include "navigation/PathFollowingComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Kismet/GameplayStatics.h"
 
 #include "Slash/DebugMacros.h"
 
@@ -306,6 +305,16 @@ bool AEnemy::CanAttack()
 	return bCanAttack;
 }
 
+void AEnemy::HandleDamage(float DamageAmount)
+{
+	Super::HandleDamage(DamageAmount);
+
+	if (Attributes && HealthBarWidget)
+	{
+		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());//时刻更新我们的健康值
+	}
+}
+
 //设置发现目标后的逻辑
 void AEnemy::PawnSeen(APawn* SeenPawn)
 {
@@ -387,53 +396,26 @@ void AEnemy::CheckCombatTarget()
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	ShowHealthBar();
-	if (Attributes && Attributes->IsAlive())
+	if (IsAlive())
 	{
 		DirectionalHitReact(ImpactPoint);
 	}
-	else
-	{
-		//播放死亡动画
-		Die();
-	}
-
-	
+	else Die();
 
 	//播放被击中的声音
-	if (HitSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(
-			this,
-			HitSound,
-			ImpactPoint
-		);
-	}
+	PlayHitSound(ImpactPoint);
 	//设置击中效果。对象的世界、种类、位置。  //这里的函数内部的GetWorld()用this也可以
-	if (HitParticles && GetWorld())
-	{
-		UGameplayStatics::SpawnEmitterAtLocation(
-			GetWorld(),
-			HitParticles,
-			ImpactPoint
-		);
-	}
+	SpawnHitParticles(ImpactPoint);
 }
 
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	
-	if (Attributes && HealthBarWidget)
-	{
-		Attributes->ReceiveDamage(DamageAmount);
-		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());//时刻更新我们的健康值
-		
-	}
+	HandleDamage(DamageAmount);
 	//如果敌人收到伤害,被激怒的逻辑
 	CombatTarget = EventInstigator->GetPawn();
-	EnemyState = EEnemyState::EES_Chasing;
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
-	MoveToTarget(CombatTarget);
+	ChaseTarget();
 
 	return DamageAmount;
 }

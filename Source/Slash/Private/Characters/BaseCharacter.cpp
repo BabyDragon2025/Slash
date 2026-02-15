@@ -5,6 +5,7 @@
 #include"Components/BoxComponent.h"
 #include"Items/Weapons/Weapon.h"
 #include "Components/AttributeComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -82,6 +83,42 @@ void ABaseCharacter::DirectionalHitReact(const FVector& ImpactPoint)
 	
 }
 
+void ABaseCharacter::SpawnHitParticles(const FVector& ImpactPoint)
+{
+	//设置击中效果。对象的世界、种类、位置。  //这里的函数内部的GetWorld()用this也可以
+	if (HitParticles && GetWorld())
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticles,
+			ImpactPoint
+		);
+	}
+}
+
+void ABaseCharacter::HandleDamage(float DamageAmount)
+{
+	if (Attributes )
+	{
+		Attributes->ReceiveDamage(DamageAmount);
+	}
+}
+
+void ABaseCharacter::PlayHitSound(const FVector& ImpactPoint)
+{
+	//播放被击中的声音
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			HitSound,
+			ImpactPoint
+		);
+	}
+}
+
+
+
 void ABaseCharacter::PlayAttackMontage()
 {
 
@@ -90,6 +127,11 @@ void ABaseCharacter::PlayAttackMontage()
 bool ABaseCharacter::CanAttack()
 {
 	return false;
+}
+
+bool ABaseCharacter::IsAlive()
+{
+	return Attributes && Attributes->IsAlive();
 }
 
 void ABaseCharacter::AttackEnd()

@@ -35,6 +35,9 @@ protected:
 	virtual void PlayAttackMontage();
 	void PlayHitReactMontage(const FName& SectionName);
 	void DirectionalHitReact(const FVector& ImpactPoint);
+	void PlayHitSound(const FVector& ImpactPoint);
+	void SpawnHitParticles(const FVector& ImpactPoint);
+	virtual void HandleDamage(float DamageAmount);
 
 	virtual bool CanAttack();// 是否可以攻击
 	bool IsAlive();
@@ -61,6 +64,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UAttributeComponent* Attributes;
+
+private:
 
 	//该变量存储MetaSound资产类型的值
 	UPROPERTY(EditAnywhere, Category = Sounds)
