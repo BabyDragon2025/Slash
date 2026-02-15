@@ -91,6 +91,9 @@ protected:
 
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
+	virtual void Attack() override;
+	virtual void PlayAttackMontage() override;
+
 
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);//°ó¶¨µ½Î¯ÍÐ
