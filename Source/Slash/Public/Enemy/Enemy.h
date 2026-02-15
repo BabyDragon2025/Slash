@@ -123,9 +123,13 @@ protected:
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
 	virtual void Attack() override;
-	virtual void PlayAttackMontage() override;
 	virtual bool CanAttack() override;
 	virtual void HandleDamage(float DamageAmount) override;
+	virtual int32 PlayDeathMontage() override;
+
+	//À¿Õˆ÷‹∆⁄
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float DeathLifeSpan = 8.f;
 
 
 	UFUNCTION()
@@ -133,7 +137,7 @@ protected:
 	
 
 	UPROPERTY(BlueprintReadOnly)
-	EDeathPose DeathPose;
+	TEnumAsByte<EDeathPose> DeathPose;
 
 	UPROPERTY(BlueprintReadOnly)
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;

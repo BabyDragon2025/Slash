@@ -4,8 +4,8 @@
 #include "Enemy/Enemy.h"
 #include "AIController.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"//人物移动头文件
+#include "Components/CapsuleComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/AttributeComponent.h"
 #include "HUD/HealthBarComponent.h"
@@ -170,58 +170,17 @@ void AEnemy::BeginPlay()
 
 void AEnemy::Die()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();//从网络体中获取动画实例
-	//播放死亡蒙太奇动画
-	if (AnimInstance && DeathMontage)
-	{
-		AnimInstance->Montage_Play(DeathMontage);
-
-		const int32 Selection = FMath::RandRange(0, 5); 
-		FName SectionName = FName(); //初始化一下名字变量
-		switch (Selection)
-		{
-		case 0:
-			SectionName = FName("Death1");
-			DeathPose = EDeathPose::EDP_Death1;
-			break;
-		case 1:
-			SectionName = FName("Death2");
-			DeathPose = EDeathPose::EDP_Death2;
-			break;
-		case 2:
-			SectionName = FName("Death3");
-			DeathPose = EDeathPose::EDP_Death3;
-			break;
-		case 3:
-			SectionName = FName("Death4");
-			DeathPose = EDeathPose::EDP_Death4;
-			break;
-		case 4:
-			SectionName = FName("Death5");
-			DeathPose = EDeathPose::EDP_Death5;
-			break;
-		case 5:
-			SectionName = FName("Death6");
-			DeathPose = EDeathPose::EDP_Death6;
-			break;
-		default:
-			break;
-		}
-
-		AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
-	}
-
-	////死亡后隐藏血条
-	if (HealthBarWidget)
-	{
-		HealthBarWidget->SetVisibility(false);
-	}
-
+	EnemyState = EEnemyState::EES_Dead;
+	PlayDeathMontage();
+	ClearAttackTimer();
+	//死亡后隐藏血条
+	HideHealthBar();
 	//死亡后禁用胶囊体碰撞 
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	DisableCapsule();
 	//死亡后消失
-	SetLifeSpan(5.f);
+	SetLifeSpan(DeathLifeSpan);
+
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 bool AEnemy::InTargetRange(AActor* Target, double Radius)
@@ -269,33 +228,6 @@ void AEnemy::Attack()
 	PlayAttackMontage();
 }
 
-void AEnemy::PlayAttackMontage()
-{
-	Super::PlayAttackMontage();
-
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();//获取动画实例
-	if (AnimInstance && AttackMontage) //播放蒙太奇动画
-	{
-		AnimInstance->Montage_Play(AttackMontage);
-		const int32 Selection = FMath::RandRange(0, 2); 
-		FName SectionName = FName(); //初始化一下名字变量
-		switch (Selection)
-		{
-		case 0:
-			SectionName = FName("Attack1");
-			break;
-		case 1:
-			SectionName = FName("Attack2");
-			break;
-		case 2:
-			SectionName = FName("Attack3");
-			break;
-		default:
-			break;
-		}
-		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
-	}
-}
 
 bool AEnemy::CanAttack()
 {
@@ -313,6 +245,18 @@ void AEnemy::HandleDamage(float DamageAmount)
 	{
 		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());//时刻更新我们的健康值
 	}
+}
+
+int32 AEnemy::PlayDeathMontage()
+{
+	const int32 Selection = Super::PlayDeathMontage();
+	TEnumAsByte<EDeathPose>Pose(Selection);
+	if (Pose < EDeathPose::EDP_MAX)
+	{
+		DeathPose = Pose;
+	}
+
+	return Selection;
 }
 
 //设置发现目标后的逻辑

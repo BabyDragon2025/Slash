@@ -39,8 +39,6 @@ protected:
 	virtual void Attack() override; //攻击的回调函数，用来绑定攻击键。
 
 	//播放蒙太奇动画的函数//重构函数
-	virtual void PlayAttackMontage() override;
-
 	virtual void AttackEnd() override; //攻击结束通知
 
 	virtual bool CanAttack() override;// 是否可以攻击

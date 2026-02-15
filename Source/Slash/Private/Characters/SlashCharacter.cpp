@@ -192,31 +192,7 @@ void ASlashCharacter::FinishEquipping()
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
-//自定义重构函数，转移了用来的攻击内容用于统一管理
-void ASlashCharacter::PlayAttackMontage()
-{
-	Super::PlayAttackMontage();
 
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();//获取动画实例
-	if (AnimInstance && AttackMontage) //播放蒙太奇动画
-	{
-		AnimInstance->Montage_Play(AttackMontage);
-		const int32 Selection = FMath::RandRange(0, 1); //动画随机播放这两种
-		FName SectionName = FName(); //初始化一下名字变量
-		switch (Selection)
-		{
-		case 0:
-			SectionName = FName("Attack1");
-			break;
-		case 1:
-			SectionName = FName("Attack2");
-			break;
-		default:
-			break;
-		}
-		AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
-	}
-}
 
 //可以调用这个函数来播放装备蒙太奇，并传入装备（物品/武器）或卸下（物品/武器）的部分名称
 void ASlashCharacter::PlayEquipMontage(const FName& SectionName)

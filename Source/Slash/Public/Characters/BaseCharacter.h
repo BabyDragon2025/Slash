@@ -32,12 +32,17 @@ protected:
 	virtual void Die();//播放死亡的蒙太奇
 
 	//播放蒙太奇动画的函数
-	virtual void PlayAttackMontage();
+	
 	void PlayHitReactMontage(const FName& SectionName);
 	void DirectionalHitReact(const FVector& ImpactPoint);
 	void PlayHitSound(const FVector& ImpactPoint);
 	void SpawnHitParticles(const FVector& ImpactPoint);
 	virtual void HandleDamage(float DamageAmount);
+	void PlayMontageSection(UAnimMontage* Montage,const FName& SectionName);//可自动播放对应的蒙太奇动画.
+	int32 PlayRandomMontageSection(UAnimMontage* Montage, const TArray<FName>& SectionNames);
+	virtual int32 PlayAttackMontage();
+	virtual int32 PlayDeathMontage();
+	void DisableCapsule();
 
 	virtual bool CanAttack();// 是否可以攻击
 	bool IsAlive();
@@ -59,6 +64,12 @@ protected:
 	//死亡蒙太奇变量
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* DeathMontage;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TArray<FName> AttackMontageSections;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TArray<FName> DeathMontageSections;
 
 	//组件
 
