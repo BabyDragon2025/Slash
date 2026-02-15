@@ -23,7 +23,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void CheckPatrolTarget();
 	void CheckCombatTarget();
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;//GetHit_Implementation覆盖了GitHit，因为GitHit设置成了原生蓝图，不再是虚函数。
 	//造成伤害
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -79,7 +78,39 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
 
-	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+	//AI行为
+	void HideHealthBar();
+	void ShowHealthBar();
+	void LoseInterest();
+	void StartPatrolling();
+	void ChaseTarget();
+	bool IsOutSideCombatRadius();
+	bool IsOutSideAttackRadius();
+	bool IsInsideAttackRadius();
+	bool IsChasing();
+	bool IsAttacking();
+	bool IsDead();
+	bool IsEngaged();
+	void ClearPatrolTimer();
+	
+
+
+	//战斗
+	void StartAttackTimer();
+	void ClearAttackTimer();
+
+	FTimerHandle AttackTimer;
+
+	UPROPERTY(EditAnywhere,Category=Combat)
+	float AttackMin = 0.5f;
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float AttackMax = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float PatrollingSpeed = 125.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ChasingSpeed = 300.f;
 
 protected:
 	
@@ -93,6 +124,7 @@ protected:
 	AActor* ChoosePatrolTarget();
 	virtual void Attack() override;
 	virtual void PlayAttackMontage() override;
+	virtual bool CanAttack() override;
 
 
 	UFUNCTION()
@@ -100,5 +132,8 @@ protected:
 	
 
 	UPROPERTY(BlueprintReadOnly)
-	EDeathPose DeathPose = EDeathPose::EDP_Alive;
+	EDeathPose DeathPose;
+
+	UPROPERTY(BlueprintReadOnly)
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
 };

@@ -37,6 +37,7 @@ protected:
 	void DirectionalHitReact(const FVector& ImpactPoint);
 
 	virtual bool CanAttack();// 是否可以攻击
+	bool IsAlive();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd(); //攻击结束通知

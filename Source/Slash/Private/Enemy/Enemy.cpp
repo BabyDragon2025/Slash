@@ -53,6 +53,94 @@ void AEnemy::PatrolTimerFinish()
 	MoveToTarget(PatrolTarget);
 }
 
+void AEnemy::HideHealthBar()
+{
+	if (HealthBarWidget)
+	{
+		HealthBarWidget->SetVisibility(false);//超出范围隐藏血条
+	}
+}
+
+void AEnemy::ShowHealthBar()
+{
+	if (HealthBarWidget)
+	{
+		HealthBarWidget->SetVisibility(true);//超出范围隐藏血条
+	}
+}
+
+void AEnemy::LoseInterest()
+{
+	CombatTarget = nullptr;
+	HideHealthBar();
+}
+
+void AEnemy::StartPatrolling()
+{
+	EnemyState = EEnemyState::EES_Patrolling;
+	GetCharacterMovement()->MaxWalkSpeed = PatrollingSpeed;
+	MoveToTarget(PatrolTarget);
+}
+
+void AEnemy::ChaseTarget()
+{
+	EnemyState = EEnemyState::EES_Chasing;
+	GetCharacterMovement()->MaxWalkSpeed = ChasingSpeed;
+	MoveToTarget(CombatTarget);
+}
+
+bool AEnemy::IsOutSideCombatRadius()
+{
+	return !InTargetRange(CombatTarget, CombatRadius);
+}
+
+bool AEnemy::IsOutSideAttackRadius()
+{
+	return !InTargetRange(CombatTarget, AttackRadius);
+}
+
+bool AEnemy::IsInsideAttackRadius()
+{
+	return InTargetRange(CombatTarget, AttackRadius);
+}
+
+bool AEnemy::IsChasing()
+{
+	return EnemyState == EEnemyState::EES_Chasing;
+}
+
+bool AEnemy::IsAttacking()
+{
+	return EnemyState == EEnemyState::EES_Attacking;
+}
+
+bool AEnemy::IsDead()
+{
+	return EnemyState == EEnemyState::EES_Dead;
+}
+
+bool AEnemy::IsEngaged()
+{
+	return EnemyState == EEnemyState::EES_Engaged;
+}
+
+void AEnemy::ClearPatrolTimer()
+{
+	GetWorldTimerManager().ClearTimer(PatrolTimer);
+}
+
+void AEnemy::StartAttackTimer()
+{
+	EnemyState = EEnemyState::EES_Attacking;
+	const float AttackTime = FMath::RandRange(AttackMin, AttackMax);
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &AEnemy::Attack, AttackTime);
+}
+
+void AEnemy::ClearAttackTimer()
+{
+	GetWorldTimerManager().ClearTimer(AttackTimer);
+}
+
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -210,22 +298,30 @@ void AEnemy::PlayAttackMontage()
 	}
 }
 
+bool AEnemy::CanAttack()
+{
+	bool bCanAttack = IsInsideAttackRadius() &&
+		!IsAttacking() &&
+		!IsDead();
+	return bCanAttack;
+}
+
 //设置发现目标后的逻辑
 void AEnemy::PawnSeen(APawn* SeenPawn)
 {
-	if (EnemyState == EEnemyState::EES_Chasing) return;//确保只调用一次MoveToTarget
-	if (SeenPawn->ActorHasTag(FName("SlashCharacter")))
-	{	
-		GetWorldTimerManager().ClearTimer(PatrolTimer);
-		GetCharacterMovement()->MaxWalkSpeed = 300.f;
-		CombatTarget = SeenPawn;
+	const bool bShouldChaseTarget =
+		EnemyState != EEnemyState::EES_Dead &&
+		EnemyState != EEnemyState::EES_Chasing &&
+		EnemyState < EEnemyState::EES_Attacking &&
+		SeenPawn->ActorHasTag(FName("SlashCharacter"));
 
-		if (EnemyState != EEnemyState::EES_Attacking)
-		{
-			EnemyState = EEnemyState::EES_Chasing;
-			MoveToTarget(CombatTarget);
-		}
+	if (bShouldChaseTarget)
+	{
+		CombatTarget = SeenPawn;
+		ClearPatrolTimer();
+		ChaseTarget();
 	}
+
 }
 
 
@@ -233,6 +329,7 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (IsDead()) return;
 
 	if (EnemyState > EEnemyState::EES_Patrolling) 
 	{
@@ -260,52 +357,36 @@ void AEnemy::CheckPatrolTarget()
 
 void AEnemy::CheckCombatTarget()
 {
-	if (!InTargetRange(CombatTarget, CombatRadius))
+	if (IsOutSideCombatRadius())
 	{
 		//战斗半径以外，失去兴趣
-		CombatTarget = nullptr;//超出攻击范围则不设置战斗目标
-		if (HealthBarWidget)
+		ClearAttackTimer();
+		LoseInterest();
+		if (!IsEngaged())
 		{
-			HealthBarWidget->SetVisibility(false);//超出范围隐藏血条
+			StartPatrolling();
 		}
-		EnemyState = EEnemyState::EES_Patrolling;
-		GetCharacterMovement()->MaxWalkSpeed = 125.f;
-		MoveToTarget(PatrolTarget);
 		
 	}
-	else if (!InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Chasing)
+	else if (IsOutSideAttackRadius() && !IsChasing())
 	{
 		//攻击范围之外，追赶主角
-		EnemyState = EEnemyState::EES_Chasing;
-		GetCharacterMovement()->MaxWalkSpeed = 300.f;
-		MoveToTarget(CombatTarget);
-		
+		ClearAttackTimer();
+		if (!IsEngaged()) ChaseTarget();
 	}
-	else if (InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Attacking)
+	else if (CanAttack())
 	{
 		//攻击范围以内，攻击主角
-		EnemyState = EEnemyState::EES_Attacking;
-		//播放攻击动画
-		Attack();
+		StartAttackTimer();
 		
 	}
 }
 
 
-void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
 
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
-	//DRAW_SPHERE_COLOR(ImpactPoint,FColor::Orange);//测试该函数。
-
-	if (HealthBarWidget)
-	{
-		HealthBarWidget->SetVisibility(true);//第一次命中显示血条。
-	}
+	ShowHealthBar();
 	if (Attributes && Attributes->IsAlive())
 	{
 		DirectionalHitReact(ImpactPoint);
