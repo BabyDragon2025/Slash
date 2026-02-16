@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"//弹簧臂头文件
 #include "Camera/CameraComponent.h"//摄像机头文件
 #include "GameFramework/CharacterMovementComponent.h"//人物移动头文件
+#include "Components/StaticMeshComponent.h"
 #include "GroomComponent.h"//毛发头文件
 #include"Items/Item.h"
 #include"Items/Weapons/Weapon.h"
@@ -22,6 +23,13 @@ ASlashCharacter::ASlashCharacter()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate=FRotator(0.f, 400.f, 0.f);
+
+	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
+	GetMesh()->SetGenerateOverlapEvents(true);
+
 
 	//创造摇臂，附加到根组件上
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -58,11 +66,19 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ASlashCharacter::Attack);
 }
 
+void ASlashCharacter::GetHit_Implementation(const FVector& ImpactPoint)
+{
+	//播放被击中的声音
+	PlayHitSound(ImpactPoint);
+	//设置击中效果。对象的世界、种类、位置。  //这里的函数内部的GetWorld()用this也可以
+	SpawnHitParticles(ImpactPoint);
+}
+
 void ASlashCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	Tags.Add(FName("SlashCharacter"));//给主角添加标签，便于识别
+	Tags.Add(FName("EngageableTarget"));//给主角添加标签，便于识别
 }
 
 

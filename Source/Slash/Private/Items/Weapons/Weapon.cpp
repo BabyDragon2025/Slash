@@ -36,22 +36,38 @@ void AWeapon::BeginPlay()
 //处理物品附加操作的函数
 void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
 {
+	ItemState = EItemState::EIS_Equipped;//物品状态设置为：已装备
 	//设置：装备这把武器后，它的所有者和发起者就会自动设置为持有它的角色
 	SetOwner(NewOwner);
 	SetInstigator(NewInstigator);
 	AttachMeshToSocket(InParent, InSocketName); //场景组件作为父级，TransformRules作为规则，附加对象InSocketName
-	ItemState = EItemState::EIS_Equipped;//物品状态设置为：已装备
-	if (EquipSound) //在指定位置播放声音
+	DisableSphereCollision();	
+	PlayEquipSound();
+
+	DeactivateEmbers();
+}
+
+void AWeapon::DeactivateEmbers()
+{
+	if (EmbersEffect)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());//传入对象，使用的音效，对象的位置
+		EmbersEffect->Deactivate();//装备武器后，停用Niagara
 	}
+}
+
+void AWeapon::DisableSphereCollision()
+{
 	if (Sphere)
 	{
 		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
-	if (EmbersEffect)
+}
+
+void AWeapon::PlayEquipSound()
+{
+	if (EquipSound) //在指定位置播放声音
 	{
-		EmbersEffect->Deactivate();//装备武器后，停用Niagara
+		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());//传入对象，使用的音效，对象的位置
 	}
 }
 
@@ -63,22 +79,61 @@ void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName& InSocke
 
 
 
-//重写了重叠信息
-void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	//要调用父类版本，就要调用该函数的父类方法
-	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-
-	
-}
-
-void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	Super::OnSphereEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
-}
-
 //盒式追踪
 void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//敌人之间无伤害
+	if (ActorIsSameType(OtherActor)) return;
+	
+	FHitResult BoxHit;
+	BoxTrace(BoxHit);
+
+	////新增部分
+	//AActor* HitActor = BoxHit.GetActor();
+	//if (HitActor)
+	//{
+	//	// 【关键修复】这里必须再次检查 HitActor！
+
+	//	// 1. 绝对不能打自己
+	//	if (HitActor == GetOwner())
+	//	{
+	//		return;
+	//	}
+
+	//	// 2. 再次检查阵营（因为 Trace 可能扫到了另一个没触发 Overlap 的敌人）
+	//	if (GetOwner()->ActorHasTag(TEXT("Enemy")) && HitActor->ActorHasTag(TEXT("Enemy")))
+	//	{
+	//		return;
+	//	}
+	//}
+	////新增部分
+
+
+	if (BoxHit.GetActor())//返回被击中的对象
+	{
+		if (ActorIsSameType(BoxHit.GetActor())) return;
+
+		UGameplayStatics::ApplyDamage(BoxHit.GetActor(),Damage,GetInstigator()->GetController(),this,UDamageType::StaticClass());
+		ExecuteGetHit(BoxHit);
+		CreateFields(BoxHit.ImpactPoint);
+	}
+}
+
+bool AWeapon::ActorIsSameType(AActor* OtherActor)
+{
+	return GetOwner()->ActorHasTag(TEXT("Enemy")) && OtherActor->ActorHasTag(TEXT("Enemy"));
+}
+
+void AWeapon::ExecuteGetHit(FHitResult& BoxHit)
+{
+	IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor());//把击中的对象转换成击中接口
+	if (HitInterface)
+	{
+		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);//执行这个事件，确保蓝图被触发
+	}
+}
+
+void AWeapon::BoxTrace(FHitResult& BoxHit)
 {
 	const FVector Start = BoxTraceStart->GetComponentLocation();
 	const FVector End = BoxTraceEnd->GetComponentLocation();
@@ -91,7 +146,6 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		ActorsToIgnore.AddUnique(Actor);
 	}
 
-	FHitResult BoxHit;
 	UKismetSystemLibrary::BoxTraceSingle(
 		this,
 		Start,
@@ -101,28 +155,9 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		ETraceTypeQuery::TraceTypeQuery1,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None,
+		bShowBoxDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None,
 		BoxHit,
 		true
 	);
-	if (BoxHit.GetActor())//返回被击中的对象
-	{
-		UGameplayStatics::ApplyDamage(
-			BoxHit.GetActor(),
-			Damage,
-			GetInstigator()->GetController(),
-			this,
-			UDamageType::StaticClass()
-		);
-
-		IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor());//把击中的对象转换成击中接口
-		if (HitInterface)
-		{
-			HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);//执行这个事件，确保蓝图被触发
-		}
-		IgnoreActors.AddUnique(BoxHit.GetActor());//知道武器命中哪个角色，AddUnique则可以不重复添加角色。
-
-		CreateFields(BoxHit.ImpactPoint);
-
-	}
+	IgnoreActors.AddUnique(BoxHit.GetActor());//知道武器命中哪个角色，AddUnique则可以不重复添加角色。
 }
