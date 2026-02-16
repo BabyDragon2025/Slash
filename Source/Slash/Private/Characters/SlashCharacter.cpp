@@ -9,11 +9,11 @@
 #include"Items/Item.h"
 #include"Items/Weapons/Weapon.h"
 #include"Animation/AnimMontage.h"
-#include"Components/BoxComponent.h"
+
 
 ASlashCharacter::ASlashCharacter()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	//用控制器旋转，让人物视角转向正常，人体不会随着“超人飞行”，而是站着换视角。
 	bUseControllerRotationPitch = false;
@@ -40,21 +40,6 @@ ASlashCharacter::ASlashCharacter()
 	Eyebrows->AttachmentName = FString("head");//指定一个插槽，可以在上面放东西，可以接上眉毛
 }
 
-
-void ASlashCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	Tags.Add(FName("SlashCharacter"));//给主角添加标签，便于识别
-}
-
-
-void ASlashCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -73,6 +58,12 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ASlashCharacter::Attack);
 }
 
+void ASlashCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	Tags.Add(FName("SlashCharacter"));//给主角添加标签，便于识别
+}
 
 
 void ASlashCharacter::MoveForward(float Value)
@@ -119,24 +110,17 @@ void ASlashCharacter::EKeyPressed()
 
 	if (OverlappingWeapon)
 	{
-		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
-		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon; //角色状态，放映我们是否装备了武器
-		OverlappingItem = nullptr; //置空重叠物品
-		EquippedWeapon = OverlappingWeapon; //用一个变量存储已装备的武器
+		EquipWeapon(OverlappingWeapon);
 	}
 	else //判断是否有武器，决定是否播放装备武器的动画
 	{
 		if (CanDisarm())
 		{
-			PlayEquipMontage(FName("Unequip"));
-			CharacterState = ECharacterState::ECS_Unequipped;
-			ActionState = EActionState::EAS_EquippingWeapon;
+			Disarm();
 		}
 		else if (CanArm())
 		{
-			PlayEquipMontage(FName("Equip"));
-			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
-			ActionState = EActionState::EAS_EquippingWeapon;
+			Arm();
 		}
 	}
 }
@@ -154,11 +138,23 @@ void ASlashCharacter::Attack()
 	
 }
 
+void ASlashCharacter::EquipWeapon(AWeapon* Weapon)
+{
+	Weapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+	CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon; //角色状态，放映我们是否装备了武器
+	OverlappingItem = nullptr; //置空重叠物品
+	EquippedWeapon = Weapon; //用一个变量存储已装备的武器
+}
+
+void ASlashCharacter::AttackEnd()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
 bool ASlashCharacter::CanAttack()
 {
 	return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
 }
-
 
 
 bool ASlashCharacter::CanDisarm()
@@ -173,26 +169,33 @@ bool ASlashCharacter::CanArm()
 
 void ASlashCharacter::Disarm()
 {
+	PlayEquipMontage(FName("Unequip"));
+	CharacterState = ECharacterState::ECS_Unequipped;
+	ActionState = EActionState::EAS_EquippingWeapon;
+}
+
+void ASlashCharacter::Arm()
+{
+	PlayEquipMontage(FName("Equip"));
+	CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+	ActionState = EActionState::EAS_EquippingWeapon;
+}
+
+void ASlashCharacter::AttachWeaponToBack()
+{
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
 	}
 }
 
-void ASlashCharacter::Arm()
+void ASlashCharacter::AttachWeaponToHand()
 {
 	if (EquippedWeapon)
 	{
 		EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
 	}
 }
-
-void ASlashCharacter::FinishEquipping()
-{
-	ActionState = EActionState::EAS_Unoccupied;
-}
-
-
 
 //可以调用这个函数来播放装备蒙太奇，并传入装备（物品/武器）或卸下（物品/武器）的部分名称
 void ASlashCharacter::PlayEquipMontage(const FName& SectionName)
@@ -205,10 +208,13 @@ void ASlashCharacter::PlayEquipMontage(const FName& SectionName)
 	}
 }
 
-void ASlashCharacter::AttackEnd()
+void ASlashCharacter::FinishEquipping()
 {
 	ActionState = EActionState::EAS_Unoccupied;
 }
+
+
+
 
 
 

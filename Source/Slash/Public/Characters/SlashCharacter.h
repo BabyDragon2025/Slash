@@ -22,7 +22,7 @@ class SLASH_API ASlashCharacter : public ABaseCharacter
 public:
 	
 	ASlashCharacter();
-	virtual void Tick(float DeltaTime) override;
+	//virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 
@@ -38,29 +38,27 @@ protected:
 	void EKeyPressed(); //这是一个动作映射（装备武器），因为是一次性，所以没有参数。
 	virtual void Attack() override; //攻击的回调函数，用来绑定攻击键。
 
-	//播放蒙太奇动画的函数//重构函数
+
+	//战斗有关
+	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override; //攻击结束通知
-
 	virtual bool CanAttack() override;// 是否可以攻击
-
-	void PlayEquipMontage(const FName& SectionName);//装备动画的函数
 	bool CanDisarm();//检查卸下播放装备武器的蒙太奇动画的条件
 	bool CanArm();//检查装备武器的蒙太奇动画的条件
+	void Disarm();
+	void Arm();
+	void PlayEquipMontage(const FName& SectionName);//装备动画的函数
 
 	UFUNCTION(BlueprintCallable)
-	void Disarm();//武器附着到脊椎上
+	void AttachWeaponToBack();//武器附着到脊椎上
 
 	UFUNCTION(BlueprintCallable)
-	void Arm();//武器从背上拿出的动画，也就是这次的附着点在右手
+	void AttachWeaponToHand();//武器从背上拿出的动画，也就是这次的附着点在右手
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();//装备动画结束时
 private:
-
-	ECharacterState CharacterState = ECharacterState::ECS_Unequipped; //使用枚举常量来控制游戏逻辑
-
-	UPROPERTY(BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
-	EActionState ActionState = EActionState::EAS_Unoccupied; //在攻击过程中阻止继续攻击
+	//Character的对应组件
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;//添加弹簧臂组件
@@ -84,7 +82,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* EquipMontage;
 
-	
+
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped; //使用枚举常量来控制游戏逻辑
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied; //在攻击过程中阻止继续攻击
+
 
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; } //有了OverlappingItem的公开设置器。小型的的函数设置成内联更高效
