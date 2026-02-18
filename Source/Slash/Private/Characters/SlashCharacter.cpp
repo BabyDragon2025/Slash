@@ -68,10 +68,7 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void ASlashCharacter::GetHit_Implementation(const FVector& ImpactPoint)
 {
-	//播放被击中的声音
-	PlayHitSound(ImpactPoint);
-	//设置击中效果。对象的世界、种类、位置。  //这里的函数内部的GetWorld()用this也可以
-	SpawnHitParticles(ImpactPoint);
+	Super::GetHit_Implementation(ImpactPoint);
 }
 
 void ASlashCharacter::BeginPlay()
