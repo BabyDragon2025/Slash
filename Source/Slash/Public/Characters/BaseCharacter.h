@@ -25,6 +25,8 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
+	//战斗部分
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
 	virtual void Attack();
 	virtual void Die();//播放死亡的蒙太奇
@@ -35,9 +37,13 @@ protected:
 	void DisableCapsule();
 	virtual bool CanAttack();// 是否可以攻击
 	bool IsAlive();
+
+	//动画部分
 	void PlayHitReactMontage(const FName& SectionName);
 	virtual int32 PlayAttackMontage();
 	virtual int32 PlayDeathMontage();
+	void StopAttackMontage();
+
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd(); //攻击结束通知
