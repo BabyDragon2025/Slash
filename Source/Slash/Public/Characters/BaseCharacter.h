@@ -44,6 +44,12 @@ protected:
 	virtual int32 PlayDeathMontage();
 	void StopAttackMontage();
 
+	UFUNCTION(BlueprintCallable)
+	FVector GetTranslationWarpTarget();
+
+	UFUNCTION(BlueprintCallable)
+	FVector GetRotationWarpTarget();
+
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd(); //攻击结束通知
@@ -59,6 +65,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UAttributeComponent* Attributes;
+
+	UPROPERTY(BlueprintReadOnly, Category = Combat)
+	AActor* CombatTarget;//战斗目标
+
+	//让敌人行动的终点与主角保持一点点距离，不要重合。
+	UPROPERTY(EditAnywhere,Category=Combat)
+	double WarpTargetDistance = 60.f;
 
 private:
 	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName);//可自动播放对应的蒙太奇动画.
