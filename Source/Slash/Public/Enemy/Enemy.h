@@ -26,7 +26,7 @@ public:
 	virtual void Destroyed() override;
 
 	//接口
-	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;//GetHit_Implementation覆盖了GitHit，因为GitHit设置成了原生蓝图，不再是虚函数。
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;//GetHit_Implementation覆盖了GitHit，因为GitHit设置成了原生蓝图，不再是虚函数。
 
 protected:
 	//继承自<AActor>

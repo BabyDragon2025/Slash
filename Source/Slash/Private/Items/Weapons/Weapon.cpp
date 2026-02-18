@@ -129,7 +129,7 @@ void AWeapon::ExecuteGetHit(FHitResult& BoxHit)
 	IHitInterface* HitInterface = Cast<IHitInterface>(BoxHit.GetActor());//把击中的对象转换成击中接口
 	if (HitInterface)
 	{
-		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);//执行这个事件，确保蓝图被触发
+		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint,GetOwner());//执行这个事件，确保蓝图被触发
 	}
 }
 

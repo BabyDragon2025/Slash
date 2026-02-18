@@ -38,7 +38,7 @@ void ABreakableActor::Tick(float DeltaTime)
 
 }
 
-void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
+void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
 	if (bBroken) return;//已经破碎则不会执行这个函数。如果false，则跳过该if内容，往后继续执行。
 	bBroken = true;

@@ -24,5 +24,5 @@ class SLASH_API IHitInterface
 public:
 	//使成为原生蓝图事件，这样它有两个版本，蓝图与C++，都可以实现该函数。同时虚函数去掉。
 	UFUNCTION(BlueprintNativeEvent)
-	void GetHit(const FVector& ImpactPoint);//击中函数，设置成虚函数，这样可以在实现击中接口的任何类中重写它
+	void GetHit(const FVector& ImpactPoint, AActor* Hitter);//击中函数，设置成虚函数，这样可以在实现击中接口的任何类中重写它
 };
