@@ -14,6 +14,7 @@ UENUM(BlueprintType)
 enum class EActionState : uint8
 {
 	EAS_Unoccupied UMETA(DisplayName = "Unoccupied"), //此状态：阻止角色做当前活动以外的其它动作
+	EAS_HitReaction UMETA(DisplayName = "HitReaction"),
 	EAS_Attacking UMETA(DisplayName="Attacking"),//此状态：攻击时的姿态
 	EAS_EquippingWeapon UMETA(DisplayName = "Equipping Weapon")//装备进行的过程
 };

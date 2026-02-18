@@ -57,6 +57,10 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();//装备动画结束时
+
+	UFUNCTION(BlueprintCallable)
+	void HitReactEnd();
+
 private:
 	//Character的对应组件
 
