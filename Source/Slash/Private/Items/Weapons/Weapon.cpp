@@ -49,9 +49,9 @@ void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOw
 
 void AWeapon::DeactivateEmbers()
 {
-	if (EmbersEffect)
+	if (ItemEffect)
 	{
-		EmbersEffect->Deactivate();//装备武器后，停用Niagara
+		ItemEffect->Deactivate();//装备武器后，停用Niagara
 	}
 }
 

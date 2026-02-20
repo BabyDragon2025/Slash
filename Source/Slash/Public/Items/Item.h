@@ -62,7 +62,7 @@ protected:
 	USphereComponent* Sphere;//声明一个USphereComponent类的指针
 
 	UPROPERTY(EditAnyWhere)
-	class UNiagaraComponent* EmbersEffect;//添加Niagara组件
+	class UNiagaraComponent* ItemEffect;//添加Niagara组件
 
 private:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
