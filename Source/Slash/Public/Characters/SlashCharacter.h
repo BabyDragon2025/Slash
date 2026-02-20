@@ -53,6 +53,7 @@ protected:
 	void Disarm();
 	void Arm();
 	void PlayEquipMontage(const FName& SectionName);//装备动画的函数
+	virtual void Die() override;
 
 	UFUNCTION(BlueprintCallable)
 	void AttachWeaponToBack();//武器附着到脊椎上
@@ -108,5 +109,6 @@ private:
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; } //有了OverlappingItem的公开设置器。小型的的函数设置成内联更高效
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; } //角色状态的公开访问器
+	FORCEINLINE EActionState GetActionState() const { return ActionState; }
 
 };

@@ -31,6 +31,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = Movement)
 	bool IsFalling;//判断是否跳跃。每帧都要判断，所以放到NativeUpdateAnimation
 
-	UPROPERTY(BlueprintReadOnly,Category="Movement|Character State")
+	UPROPERTY(BlueprintReadOnly,Category= Movement)
 	ECharacterState CharacterState;//在动画里加入状态
+
+	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	EActionState ActionState;
+
+	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	TEnumAsByte<EDeathPose> DeathPose;//暴露变量给蓝图，使动画蓝图可以用到。
 };

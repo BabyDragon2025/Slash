@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/HitInterface.h"
+#include "Characters/CharacterType.h"
 #include "BaseCharacter.generated.h"
 
 class AWeapon;
@@ -37,6 +38,7 @@ protected:
 	void DisableCapsule();
 	virtual bool CanAttack();// 是否可以攻击
 	bool IsAlive();
+	void DisableMeshCollision();
 
 	//动画部分
 	void PlayHitReactMontage(const FName& SectionName);
@@ -71,7 +73,10 @@ protected:
 
 	//让敌人行动的终点与主角保持一点点距离，不要重合。
 	UPROPERTY(EditAnywhere,Category=Combat)
-	double WarpTargetDistance = 60.f;
+	double WarpTargetDistance = 70.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	TEnumAsByte<EDeathPose> DeathPose;
 
 private:
 	void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName);//可自动播放对应的蒙太奇动画.
@@ -102,4 +107,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	TArray<FName> DeathMontageSections;
+public:
+	FORCEINLINE TEnumAsByte<EDeathPose> GetDeathPose() const { return DeathPose; }
 };
