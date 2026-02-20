@@ -239,7 +239,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	{
 		EnemyState = EEnemyState::EES_Attacking;
 	}
-	else if (IsOutSideAttackRadius())
+	else if (IsOutSideAttackRadius()) 
 	{
 		ChaseTarget();
 	}
@@ -297,8 +297,10 @@ void AEnemy::Die()
 
 void AEnemy::Attack()
 {
-	EnemyState = EEnemyState::EES_Engaged;
 	Super::Attack();
+	if (CombatTarget == nullptr) return;
+
+	EnemyState = EEnemyState::EES_Engaged;
 	PlayAttackMontage();
 }
 
