@@ -62,16 +62,25 @@ void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis(FName("LookUp"), this, &ASlashCharacter::LookUp);
 
 	//绑定跳跃//Jump本身在角色类就存在，在编辑器里设置了。而且我们没有改写它，它不用在SlashCharacter里设置。IE_Pressed包含枚举常量，比如：按下。
-	PlayerInputComponent->BindAction(FName("Jump"), IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction(FName("Jump"), IE_Pressed, this, &ASlashCharacter::Jump);
 	//绑定装备
 	PlayerInputComponent->BindAction(FName("Equip"), IE_Pressed, this, &ASlashCharacter::EKeyPressed);
 	//绑定攻击
 	PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ASlashCharacter::Attack);
 }
 
+void ASlashCharacter::Jump()
+{
+	if (IsUnoccupied())
+	{
+		Super::Jump();
+	}
+}
+
 float ASlashCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	HandleDamage(DamageAmount);
+	SetHUDHealth();
 	return DamageAmount;
 }
 
@@ -245,6 +254,11 @@ void ASlashCharacter::HitReactEnd()
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
+bool ASlashCharacter::IsUnoccupied()
+{
+	return ActionState == EActionState::EAS_Unoccupied;
+}
+
 //设置主角的HUD
 void ASlashCharacter::InitializeSlashOverlay()
 {
@@ -267,6 +281,13 @@ void ASlashCharacter::InitializeSlashOverlay()
 	}
 }
 
+void ASlashCharacter::SetHUDHealth()
+{
+	if (SlashOverlay && Attributes)
+	{
+		SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+	}
+}
 
 
 

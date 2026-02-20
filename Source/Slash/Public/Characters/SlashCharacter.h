@@ -25,7 +25,9 @@ public:
 	ASlashCharacter();
 	//virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void Jump() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;//GetHit_Implementation覆盖了GitHit，因为GitHit设置成了原生蓝图，不再是虚函数。
 
 
@@ -65,8 +67,9 @@ protected:
 	void HitReactEnd();
 
 private:
-
+	bool IsUnoccupied();
 	void InitializeSlashOverlay();
+	void SetHUDHealth();//更新HUD的血条。
 
 	//Character的对应组件
 
@@ -98,6 +101,7 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied; //在攻击过程中阻止继续攻击
 
+	//HUD
 	UPROPERTY()
 	USlashOverlay* SlashOverlay;
 
