@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
-#include"CharacterType.h"
+#include "CharacterType.h"
 #include "SlashCharacter.generated.h"
 
 class USpringArmComponent;//提前声明弹簧臂组件
@@ -12,6 +12,7 @@ class UCameraComponent;//提前声明摄像机组件
 class UGroomComponent;//提前声明毛发组件
 class AItem; 
 class UAnimMontage;
+class USlashOverlay;
 
 
 UCLASS()
@@ -30,6 +31,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+
 
 	//输入的回调函数
 	void MoveForward(float Value); //前进函数。
@@ -63,6 +65,9 @@ protected:
 	void HitReactEnd();
 
 private:
+
+	void InitializeSlashOverlay();
+
 	//Character的对应组件
 
 	UPROPERTY(VisibleAnywhere)
@@ -93,6 +98,8 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied; //在攻击过程中阻止继续攻击
 
+	UPROPERTY()
+	USlashOverlay* SlashOverlay;
 
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; } //有了OverlappingItem的公开设置器。小型的的函数设置成内联更高效

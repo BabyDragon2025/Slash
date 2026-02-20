@@ -7,9 +7,12 @@
 #include "GameFramework/CharacterMovementComponent.h"//人物移动头文件
 #include "Components/StaticMeshComponent.h"
 #include "GroomComponent.h"//毛发头文件
-#include"Items/Item.h"
-#include"Items/Weapons/Weapon.h"
-#include"Animation/AnimMontage.h"
+#include "Components/AttributeComponent.h"
+#include "Items/Item.h"
+#include "Items/Weapons/Weapon.h"
+#include "Animation/AnimMontage.h"
+#include "HUD/SlashHUD.h"
+#include "HUD/SlashOverlay.h"
 
 
 ASlashCharacter::ASlashCharacter()
@@ -86,6 +89,7 @@ void ASlashCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	Tags.Add(FName("EngageableTarget"));//给主角添加标签，便于识别
+	InitializeSlashOverlay();
 }
 
 
@@ -241,6 +245,27 @@ void ASlashCharacter::HitReactEnd()
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
+//设置主角的HUD
+void ASlashCharacter::InitializeSlashOverlay()
+{
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		ASlashHUD* SlashHUD = Cast<ASlashHUD>(PlayerController->GetHUD());
+		if (SlashHUD)
+		{
+			SlashOverlay = SlashHUD->GetSlashOverlay();
+			if (SlashOverlay && Attributes)
+			{
+				SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+				SlashOverlay->SetStaminaBarPercent(1.f);
+				SlashOverlay->SetGold(0);
+				SlashOverlay->SetSouls(0);
+			}
+		}
+	}
+}
 
 
 
