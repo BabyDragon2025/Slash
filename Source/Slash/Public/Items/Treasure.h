@@ -18,9 +18,6 @@ protected:
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 private:
 
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* PickupSound; //物品拾取的声音
-
 	UPROPERTY(EditAnywhere, Category = "Treasure Properties")
 	int32 Gold;//金币价值/黄金数量
 };

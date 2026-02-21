@@ -8,6 +8,7 @@
 #include "Item.generated.h"
 
 class USphereComponent; //声明一个球形组件
+class UNiagaraComponent;
 
 enum class EItemState :uint8 //物品状态枚举变量
 {
@@ -53,6 +54,9 @@ protected:
 	UFUNCTION()//需要U函数宏才可以绑定 //准备在Weapon里面重写函数，加上virtual
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	virtual void SpanwPickupSystem();
+	virtual void SpanwPickupSound();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* ItemMesh; 
 
@@ -64,11 +68,15 @@ protected:
 	UPROPERTY(EditAnyWhere)
 	class UNiagaraComponent* ItemEffect;//添加Niagara组件
 
+	UPROPERTY(EditAnywhere)
+	USoundBase* PickupSound;
+
 private:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly,meta=(AllowPrivateAccess="true"))
 	float RunningTime; 
 
-	
+	UPROPERTY(EditAnywhere)
+	class UNiagaraSystem* PickupEffect;//添加一个Niagara系统，供生成使用
 
 
 };

@@ -3,7 +3,7 @@
 
 #include "Items/Treasure.h"
 #include"Characters/SlashCharacter.h" 
-#include "Kismet/GameplayStatics.h"
+#include "Components/SphereComponent.h"
 
 void ATreasure::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -12,14 +12,7 @@ void ATreasure::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	if (SlashCharacter)
 	{
 		//在指定位置播放声音
-		if (PickupSound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(
-				this,
-				PickupSound,
-				GetActorLocation()
-			);
-		}
+		SpanwPickupSound();
 
 		//销毁拾取物品
 		Destroy();
