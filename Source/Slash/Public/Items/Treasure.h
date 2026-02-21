@@ -20,4 +20,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Treasure Properties")
 	int32 Gold;//金币价值/黄金数量
+public:
+	FORCEINLINE int32 GetGold() const { return Gold; }
 };

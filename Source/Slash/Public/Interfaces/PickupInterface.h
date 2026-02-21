@@ -24,4 +24,5 @@ class SLASH_API IPickupInterface
 public:
 	virtual void SetOverlappingItem(class AItem* Item);
 	virtual void AddSouls(class ASoul* Soul);// 增加灵魂（经验）的逻辑。
+	virtual void AddGold(class ATreasure* Treasure);
 };

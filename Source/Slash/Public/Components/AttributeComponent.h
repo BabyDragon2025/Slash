@@ -30,6 +30,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
 	float MaxHealth;
 
+	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
+	int32 Gold;
+
+	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
+	int32 Souls;
+
 public:
 	//处理健康变量的变化
 	void ReceiveDamage(float Damage);
@@ -37,4 +43,11 @@ public:
 	float GetHealthPercent();
 	//判断是否活着
 	bool IsAlive();
+
+	void AddSouls(int32 NumberOfSouls);
+	void AddGold(int32 AmountOfGold);
+
+	//为金币和灵魂设置公共获取器
+	FORCEINLINE int32 GetGold() const { return Gold; }
+	FORCEINLINE int32 GetSouls() const { return Souls; }
 };

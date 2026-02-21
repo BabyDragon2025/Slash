@@ -13,6 +13,7 @@ class UCameraComponent;//提前声明摄像机组件
 class UGroomComponent;//提前声明毛发组件
 class AItem; 
 class ASoul;
+class ATreasure;
 class UAnimMontage;
 class USlashOverlay;
 
@@ -33,6 +34,7 @@ public:
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;//GetHit_Implementation覆盖了GitHit，因为GitHit设置成了原生蓝图，不再是虚函数。
 	virtual void SetOverlappingItem(class AItem* Item) override;
 	virtual void AddSouls(ASoul* Soul) override;
+	virtual void AddGold(ATreasure* Treasure) override;
 
 protected:
 	virtual void BeginPlay() override;
