@@ -17,6 +17,7 @@ enum class EActionState : uint8
 	EAS_HitReaction UMETA(DisplayName = "HitReaction"),
 	EAS_Attacking UMETA(DisplayName="Attacking"),//此状态：攻击时的姿态
 	EAS_EquippingWeapon UMETA(DisplayName = "Equipping Weapon"),//装备进行的过程
+	EAS_Dodge UMETA(DisplayName = "Dodge"),
 	EAS_Dead UMETA(DisplayName = "Dead")
 };
 

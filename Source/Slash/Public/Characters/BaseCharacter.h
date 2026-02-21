@@ -44,6 +44,7 @@ protected:
 	void PlayHitReactMontage(const FName& SectionName);
 	virtual int32 PlayAttackMontage();
 	virtual int32 PlayDeathMontage();
+	virtual void PlayDodgeMontage();
 	void StopAttackMontage();
 
 	UFUNCTION(BlueprintCallable)
@@ -55,6 +56,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd(); //攻击结束通知
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DodgeEnd(); //闪避结束，设置内容，比如状态改变。
 
 
 	//设置碰撞开关。
@@ -101,6 +105,9 @@ private:
 	//死亡蒙太奇变量
 	UPROPERTY(EditDefaultsOnly, Category = Combat)
 	UAnimMontage* DeathMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Combat)
+	UAnimMontage* DodgeMontage;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	TArray<FName> AttackMontageSections;

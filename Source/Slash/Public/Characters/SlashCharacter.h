@@ -47,11 +47,13 @@ protected:
 	void LookUp(float Value);
 	void EKeyPressed(); //这是一个动作映射（装备武器），因为是一次性，所以没有参数。
 	virtual void Attack() override; //攻击的回调函数，用来绑定攻击键。
+	void Dodge();
 
 
 	//战斗有关
 	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override; //攻击结束通知
+	virtual void DodgeEnd() override;
 	virtual bool CanAttack() override;// 是否可以攻击
 	bool CanDisarm();//检查卸下播放装备武器的蒙太奇动画的条件
 	bool CanArm();//检查装备武器的蒙太奇动画的条件
