@@ -10,6 +10,7 @@
 #include "HUD/HealthBarComponent.h"
 #include"Items/Weapons/Weapon.h"
 #include "navigation/PathFollowingComponent.h"
+#include "Items/Soul.h"
 
 
 
@@ -293,6 +294,22 @@ void AEnemy::Die()
 
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
+	//生成Soul//可根据敌人内部的soul不同来生成不一样的soul数量
+	SpawnSoul();
+
+}
+
+void AEnemy::SpawnSoul()
+{
+	UWorld* World = GetWorld();
+	if (World && SoulClass)
+	{
+		ASoul* SpawnedSoul = World->SpawnActor<ASoul>(SoulClass, GetActorLocation(), GetActorRotation());
+		if (SpawnedSoul)
+		{
+			SpawnedSoul->SetSouls(Attributes->GetSouls());
+		}
+	}
 }
 
 void AEnemy::Attack()

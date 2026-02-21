@@ -34,7 +34,9 @@ protected:
 
 
 	//继承自<ABaseCharacter>
-	virtual void Die() override;//播放死亡的蒙太奇
+	virtual void Die() override;
+	void SpawnSoul();
+	//播放死亡的蒙太奇
 	virtual void Attack() override;
 	virtual bool CanAttack() override;
 	virtual void AttackEnd() override;
@@ -135,4 +137,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float DeathLifeSpan = 8.f;
 
+	//敌人死亡后生成soul
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TSubclassOf<class ASoul>SoulClass;
 };
