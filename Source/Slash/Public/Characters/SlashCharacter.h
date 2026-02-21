@@ -5,18 +5,20 @@
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
 #include "CharacterType.h"
+#include "Interfaces/PickupInterface.h"
 #include "SlashCharacter.generated.h"
 
 class USpringArmComponent;//提前声明弹簧臂组件
 class UCameraComponent;//提前声明摄像机组件
 class UGroomComponent;//提前声明毛发组件
 class AItem; 
+class ASoul;
 class UAnimMontage;
 class USlashOverlay;
 
 
 UCLASS()
-class SLASH_API ASlashCharacter : public ABaseCharacter
+class SLASH_API ASlashCharacter : public ABaseCharacter,public IPickupInterface
 {
 	GENERATED_BODY()
 
@@ -29,7 +31,8 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;//GetHit_Implementation覆盖了GitHit，因为GitHit设置成了原生蓝图，不再是虚函数。
-
+	virtual void SetOverlappingItem(class AItem* Item) override;
+	virtual void AddSouls(ASoul* Soul) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -107,7 +110,6 @@ private:
 	USlashOverlay* SlashOverlay;
 
 public:
-	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; } //有了OverlappingItem的公开设置器。小型的的函数设置成内联更高效
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; } //角色状态的公开访问器
 	FORCEINLINE EActionState GetActionState() const { return ActionState; }
 

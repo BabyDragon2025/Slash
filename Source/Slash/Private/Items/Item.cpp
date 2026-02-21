@@ -4,7 +4,7 @@
 #include "Items/Item.h"
 #include"Slash/DebugMacros.h"
 #include"Components/SphereComponent.h" //球形组件的头文件
-#include"Characters/SlashCharacter.h" // 有了它，可以在OnSphereOverlap中将其转换为SlashCharacter
+#include "Interfaces/PickupInterface.h" 
 #include "NiagaraComponent.h" //该头文件记得加上Niagara模块才可以使用
 
 
@@ -49,21 +49,21 @@ float AItem::TransformedCos()
 
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	IPickupInterface* PickupInterface = Cast<IPickupInterface>(OtherActor);
 	//角色重叠时设置角色上的重叠物品
-	if (SlashCharacter)
+	if (PickupInterface)
 	{
-		SlashCharacter->SetOverlappingItem(this);
+		PickupInterface->SetOverlappingItem(this);
 	}
 }
 
 void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	IPickupInterface* PickupInterface = Cast<IPickupInterface>(OtherActor);
 	//角色离开时设置角色上的重叠物品
-	if (SlashCharacter)
+	if (PickupInterface)
 	{
-		SlashCharacter->SetOverlappingItem(nullptr);
+		PickupInterface->SetOverlappingItem(nullptr);
 	}
 }
 
