@@ -87,7 +87,7 @@ void AWeapon::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	
 	FHitResult BoxHit;
 	BoxTrace(BoxHit);
-
+	
 	////新增部分
 	//AActor* HitActor = BoxHit.GetActor();
 	//if (HitActor)
@@ -140,6 +140,7 @@ void AWeapon::BoxTrace(FHitResult& BoxHit)
 
 	TArray<AActor*>ActorsToIgnore;
 	ActorsToIgnore.Add(this);//确保我们不会击中武器本身
+	ActorsToIgnore.Add(GetOwner());//确保武器不会击中使用者本身
 
 	for (AActor* Actor : IgnoreActors)
 	{
