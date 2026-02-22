@@ -19,7 +19,7 @@
 
 ASlashCharacter::ASlashCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	//用控制器旋转，让人物视角转向正常，人体不会随着“超人飞行”，而是站着换视角。
 	bUseControllerRotationPitch = false;
@@ -51,6 +51,15 @@ ASlashCharacter::ASlashCharacter()
 	Eyebrows = CreateDefaultSubobject<UGroomComponent>(TEXT("Eyebrows"));//每个 CreateDefaultSubobject 的名字必须是唯一的。否则会崩溃。
 	Eyebrows->SetupAttachment(GetMesh()); //连接到网络
 	Eyebrows->AttachmentName = FString("head");//指定一个插槽，可以在上面放东西，可以接上眉毛
+}
+
+void ASlashCharacter::Tick(float DeltaTime)
+{
+	if (Attributes && SlashOverlay)
+	{
+		Attributes->RegenStamina(DeltaTime);
+		SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	}
 }
 
 void ASlashCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -206,9 +215,16 @@ void ASlashCharacter::Attack()
 //闪避
 void ASlashCharacter::Dodge()
 {
-	if (ActionState != EActionState::EAS_Unoccupied) return;
+	if (IsOccupied() || !HasEnoughStamina()) return;
+	
 	PlayDodgeMontage();
 	ActionState = EActionState::EAS_Dodge;
+	if (Attributes && SlashOverlay)
+	{
+		Attributes->UseStamina(Attributes->GetDodgeCost());
+		SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	}
+
 }
 
 void ASlashCharacter::EquipWeapon(AWeapon* Weapon)
@@ -295,6 +311,17 @@ void ASlashCharacter::Die()
 	ActionState = EActionState::EAS_Dead;
 	DisableMeshCollision();
 }
+
+bool ASlashCharacter::HasEnoughStamina()
+{
+	return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();
+}
+
+bool ASlashCharacter::IsOccupied()
+{
+	return ActionState != EActionState::EAS_Unoccupied;
+}
+
 
 void ASlashCharacter::FinishEquipping()
 {

@@ -26,7 +26,7 @@ class SLASH_API ASlashCharacter : public ABaseCharacter,public IPickupInterface
 public:
 	
 	ASlashCharacter();
-	//virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -61,6 +61,8 @@ protected:
 	void Arm();
 	void PlayEquipMontage(const FName& SectionName);//装备动画的函数
 	virtual void Die() override;
+	bool HasEnoughStamina();
+	bool IsOccupied();
 
 	UFUNCTION(BlueprintCallable)
 	void AttachWeaponToBack();//武器附着到脊椎上
