@@ -185,7 +185,7 @@ void AEnemy::SpawnDefaultWeapon()
 	if (World && WeaponClasss)
 	{
 		AWeapon* DefaultWeapon = World->SpawnActor<AWeapon>(WeaponClasss);
-		DefaultWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+		DefaultWeapon->Equip(GetMesh(), FName("WeaponSocket"), this, this);
 		EquippedWeapon = DefaultWeapon;
 	}
 }
