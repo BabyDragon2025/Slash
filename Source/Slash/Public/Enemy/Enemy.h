@@ -34,7 +34,7 @@ protected:
 
 
 	//¼Ì³Ğ×Ô<ABaseCharacter>
-	virtual void Die() override;
+	virtual void Die_Implementation() override;
 	void SpawnSoul();
 	//²¥·ÅËÀÍöµÄÃÉÌ«Ææ
 	virtual void Attack() override;

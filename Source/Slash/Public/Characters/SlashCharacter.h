@@ -60,7 +60,7 @@ protected:
 	void Disarm();
 	void Arm();
 	void PlayEquipMontage(const FName& SectionName);//装备动画的函数
-	virtual void Die() override;
+	virtual void Die_Implementation() override;
 	bool HasEnoughStamina();
 	bool IsOccupied();
 

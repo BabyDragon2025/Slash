@@ -28,9 +28,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	//战斗部分
+
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
 	virtual void Attack();
-	virtual void Die();//播放死亡的蒙太奇
+
+	UFUNCTION(BlueprintNativeEvent)
+	void Die();//播放死亡的蒙太奇
+
 	void DirectionalHitReact(const FVector& ImpactPoint);
 	virtual void HandleDamage(float DamageAmount);
 	void PlayHitSound(const FVector& ImpactPoint);

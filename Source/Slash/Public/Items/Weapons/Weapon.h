@@ -62,7 +62,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* BoxTraceEnd;
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	float Damage = 20.f;//…À∫¶…Ë÷√
 
 public:
