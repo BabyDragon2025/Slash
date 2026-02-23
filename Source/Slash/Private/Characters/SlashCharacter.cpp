@@ -184,6 +184,10 @@ void ASlashCharacter::EKeyPressed()
 
 	if (OverlappingWeapon)
 	{
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->Destroy();
+		}
 		EquipWeapon(OverlappingWeapon);
 	}
 	else //判断是否有武器，决定是否播放装备武器的动画
